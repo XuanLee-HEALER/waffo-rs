@@ -1,0 +1,33 @@
+[package]
+name = "waffo-rs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Async Rust SDK for the Waffo payment platform"
+repository = "https://github.com/XuanLee-HEALER/waffo-rs"
+
+[lib]
+name = "waffo_rs"
+
+[dependencies]
+waffo-rs-derive = { path = "../waffo-rs-derive", version = "0.1.0" }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+reqwest = "0.13"
+rsa = "0.9"
+sha2 = { version = "0.10", features = ["oid"] }
+base64 = "0.22"
+rand = "0.8"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+thiserror = "2"
+tracing = "0.1"
+axum = { version = "0.8", optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+hex = "0.4"
+
+[features]
+default = []
+axum = ["dep:axum"]
