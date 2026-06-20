@@ -34,9 +34,15 @@ use waffo_rs::{Client, WaffoConfig, WaffoError};
 // ---------------------------------------------------------------------------
 
 fn client_from_env() -> Client {
+    // Load a local .env file (workspace root, gitignored) once, if present.
+    static INIT: std::sync::Once = std::sync::Once::new();
+    INIT.call_once(|| {
+        let _ = dotenvy::dotenv();
+    });
+
     let cfg = WaffoConfig::from_env().expect(
         "e2e: set WAFFO_API_KEY / WAFFO_PRIVATE_KEY / WAFFO_PUBLIC_KEY \
-         (+ WAFFO_MERCHANT_ID, WAFFO_ENVIRONMENT=SANDBOX)",
+         (+ WAFFO_MERCHANT_ID, WAFFO_ENVIRONMENT=SANDBOX) — e.g. in a .env file",
     );
     Client::new(cfg).expect("e2e: client should build from the env config")
 }

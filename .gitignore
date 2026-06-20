@@ -15,3 +15,6 @@ Thumbs.db
 # Local-only design / analysis docs (kept in the working tree, not published)
 /docs/WAFFO_RS_DESIGN.md
 /docs/WAFFO_GO_ANALYSIS.md
+
+# Real credentials — never commit. Use .env.example as the template.
+/.env

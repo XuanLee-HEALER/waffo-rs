@@ -31,6 +31,7 @@ axum = { version = "0.8", optional = true }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 hex = "0.4"
 wiremock = "0.6"
+dotenvy = "0.15"
 
 [features]
 default = []
