@@ -8,5 +8,21 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 rust-version = "1.75"
 
+# Strict quality gate. clippy is the linter (rustfmt is the formatter, see
+# rustfmt.toml). Deny clippy::all and clippy::pedantic; the allow-list below
+# turns off only the opinionated/doc-noise pedantic lints that are not worth the
+# churn for an SDK of this shape.
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+doc_markdown = "allow"
+
 [profile.release]
 opt-level = 3

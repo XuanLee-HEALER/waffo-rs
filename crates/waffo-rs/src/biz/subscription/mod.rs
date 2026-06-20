@@ -19,7 +19,10 @@ use waffo_rs::base::{Endpoint, MerchantInfoExt};
 /// response and webhook notifications. Referenced cross-domain by order/refund.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SubscriptionInfo {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
     #[serde(rename = "merchantRequest", skip_serializing_if = "Option::is_none")]
     pub merchant_request: Option<String>,
@@ -51,21 +54,34 @@ pub struct ProductInfo {
     pub number_of_period: Option<String>,
     #[serde(rename = "trialPeriodAmount", skip_serializing_if = "Option::is_none")]
     pub trial_period_amount: Option<String>,
-    #[serde(rename = "numberOfTrialPeriod", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "numberOfTrialPeriod",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub number_of_trial_period: Option<String>,
     #[serde(rename = "trialPeriodType", skip_serializing_if = "Option::is_none")]
     pub trial_period_type: Option<String>,
-    #[serde(rename = "trialPeriodInterval", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "trialPeriodInterval",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub trial_period_interval: Option<String>,
     #[serde(rename = "startDateTime", skip_serializing_if = "Option::is_none")]
     pub start_date_time: Option<String>,
     #[serde(rename = "endDateTime", skip_serializing_if = "Option::is_none")]
     pub end_date_time: Option<String>,
-    #[serde(rename = "nextPaymentDateTime", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "nextPaymentDateTime",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub next_payment_date_time: Option<String>,
     #[serde(rename = "currentPeriod", skip_serializing_if = "Option::is_none")]
     pub current_period: Option<String>,
-    #[serde(rename = "scheduledAmounts", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "scheduledAmounts",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub scheduled_amounts: Vec<ScheduledAmount>,
 }
 
@@ -165,7 +181,10 @@ pub struct SubscriptionBrandInfo {
     pub cashier_logo_url: Option<String>,
     #[serde(rename = "cashierDisplayName", skip_serializing_if = "Option::is_none")]
     pub cashier_display_name: Option<String>,
-    #[serde(rename = "cashierProductImageUrl", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "cashierProductImageUrl",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub cashier_product_image_url: Option<String>,
 }
 
@@ -178,15 +197,27 @@ pub struct SubscriptionPaymentInfo {
     pub pay_method_type: Option<String>,
     #[serde(rename = "payMethodName", skip_serializing_if = "Option::is_none")]
     pub pay_method_name: Option<String>,
-    #[serde(rename = "payMethodProperties", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "payMethodProperties",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub pay_method_properties: Option<String>,
     #[serde(rename = "payMethodPublicUid", skip_serializing_if = "Option::is_none")]
     pub pay_method_public_uid: Option<String>,
-    #[serde(rename = "payMethodUserAccessToken", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "payMethodUserAccessToken",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub pay_method_user_access_token: Option<String>,
-    #[serde(rename = "payMethodUserAccountType", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "payMethodUserAccountType",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub pay_method_user_account_type: Option<String>,
-    #[serde(rename = "payMethodUserAccountNo", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "payMethodUserAccountNo",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub pay_method_user_account_no: Option<String>,
     #[serde(rename = "payMethodResponse", skip_serializing_if = "Option::is_none")]
     pub pay_method_response: Option<String>,
@@ -220,13 +251,23 @@ pub struct SubscriptionChangeProductInfo {
     pub number_of_period: Option<String>,
     #[serde(rename = "trialPeriodAmount", skip_serializing_if = "Option::is_none")]
     pub trial_period_amount: Option<String>,
-    #[serde(rename = "numberOfTrialPeriod", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "numberOfTrialPeriod",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub number_of_trial_period: Option<String>,
     #[serde(rename = "trialPeriodType", skip_serializing_if = "Option::is_none")]
     pub trial_period_type: Option<String>,
-    #[serde(rename = "trialPeriodInterval", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "trialPeriodInterval",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub trial_period_interval: Option<String>,
-    #[serde(rename = "scheduledAmounts", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "scheduledAmounts",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub scheduled_amounts: Vec<ScheduledAmount>,
 }
 
@@ -235,7 +276,11 @@ pub struct SubscriptionChangeProductInfo {
 pub struct UpdateProductInfo {
     #[serde(rename = "trialPeriodAmount", skip_serializing_if = "Option::is_none")]
     pub trial_period_amount: Option<String>,
-    #[serde(rename = "scheduledAmounts", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "scheduledAmounts",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub scheduled_amounts: Vec<ScheduledAmount>,
 }
 
@@ -301,7 +346,10 @@ pub struct CreateSubscriptionParams {
     pub failed_redirect_url: Option<String>,
     #[serde(rename = "cancelRedirectUrl", skip_serializing_if = "Option::is_none")]
     pub cancel_redirect_url: Option<String>,
-    #[serde(rename = "subscriptionManagementUrl", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionManagementUrl",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_management_url: Option<String>,
     #[serde(rename = "notifyUrl")]
     pub notify_url: String,
@@ -315,7 +363,11 @@ pub struct CreateSubscriptionParams {
     pub acq_merchant: Option<serde_json::Value>,
     #[serde(rename = "acqProduct", skip_serializing_if = "Option::is_none")]
     pub acq_product: Option<serde_json::Value>,
-    #[serde(rename = "acqAgreements", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "acqAgreements",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub acq_agreements: Vec<serde_json::Value>,
     #[serde(rename = "extraParams", skip_serializing_if = "Option::is_none")]
     pub extra_params: Option<waffo_rs::ExtraParams>,
@@ -324,13 +376,22 @@ pub struct CreateSubscriptionParams {
 /// `CreateSubscriptionData` represents the response data for subscription creation.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CreateSubscriptionData {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
-    #[serde(rename = "payMethodSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "payMethodSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub pay_method_subscription_id: Option<String>,
     #[serde(rename = "subscriptionStatus", skip_serializing_if = "Option::is_none")]
     pub subscription_status: Option<String>,
@@ -348,6 +409,13 @@ impl CreateSubscriptionData {
     /// as JSON `{webUrl, deeplinkUrl}` and return `webUrl` if non-empty, else
     /// `deeplinkUrl` if non-empty, else `""`.
     pub fn fetch_redirect_url(&self) -> String {
+        #[derive(Deserialize)]
+        struct Action {
+            #[serde(rename = "webUrl", default)]
+            web_url: String,
+            #[serde(rename = "deeplinkUrl", default)]
+            deeplink_url: String,
+        }
         let action = self.subscription_action.as_deref().unwrap_or("");
         if action.is_empty() {
             return String::new();
@@ -355,13 +423,6 @@ impl CreateSubscriptionData {
         let trimmed = action.trim();
         if trimmed.starts_with("http://") || trimmed.starts_with("https://") {
             return trimmed.to_string();
-        }
-        #[derive(Deserialize)]
-        struct Action {
-            #[serde(rename = "webUrl", default)]
-            web_url: String,
-            #[serde(rename = "deeplinkUrl", default)]
-            deeplink_url: String,
         }
         if let Ok(a) = serde_json::from_str::<Action>(trimmed) {
             if !a.web_url.is_empty() {
@@ -399,7 +460,10 @@ pub async fn create(
 /// `InquirySubscriptionParams` represents the parameters for querying a subscription.
 #[derive(Debug, Clone, Default, Serialize, Deserialize, waffo_rs::WaffoRequest)]
 pub struct InquirySubscriptionParams {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
@@ -412,13 +476,22 @@ pub struct InquirySubscriptionParams {
 /// `InquirySubscriptionData` represents the response data for subscription inquiry.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct InquirySubscriptionData {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
-    #[serde(rename = "payMethodSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "payMethodSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub pay_method_subscription_id: Option<String>,
     #[serde(rename = "subscriptionStatus", skip_serializing_if = "Option::is_none")]
     pub subscription_status: Option<String>,
@@ -444,11 +517,18 @@ pub struct InquirySubscriptionData {
     pub updated_at: Option<String>,
     #[serde(rename = "failedReason", skip_serializing_if = "Option::is_none")]
     pub failed_reason: Option<String>,
-    #[serde(rename = "subscriptionManagementUrl", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionManagementUrl",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_management_url: Option<String>,
     #[serde(rename = "extendInfo", skip_serializing_if = "Option::is_none")]
     pub extend_info: Option<String>,
-    #[serde(rename = "paymentDetails", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "paymentDetails",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub payment_details: Vec<PaymentDetail>,
     #[serde(rename = "goodsInfo", skip_serializing_if = "Option::is_none")]
     pub goods_info: Option<SubscriptionGoodsInfo>,
@@ -497,9 +577,15 @@ pub struct CancelSubscriptionParams {
 /// `CancelSubscriptionData` represents the response data for subscription cancellation.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct CancelSubscriptionData {
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
@@ -535,7 +621,10 @@ pub async fn cancel(
 pub struct ManageSubscriptionParams {
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
     #[serde(rename = "extraParams", skip_serializing_if = "Option::is_none")]
     pub extra_params: Option<waffo_rs::ExtraParams>,
@@ -544,9 +633,15 @@ pub struct ManageSubscriptionParams {
 /// `ManageSubscriptionData` represents the response data for subscription management.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ManageSubscriptionData {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
@@ -586,7 +681,10 @@ pub async fn manage(
 pub struct ChangeSubscriptionParams {
     #[serde(rename = "subscriptionRequest")]
     pub subscription_request: String,
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
     #[serde(rename = "originSubscriptionRequest")]
     pub origin_subscription_request: String,
@@ -607,7 +705,10 @@ pub struct ChangeSubscriptionParams {
     pub cancel_redirect_url: Option<String>,
     #[serde(rename = "notifyUrl")]
     pub notify_url: String,
-    #[serde(rename = "subscriptionManagementUrl", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionManagementUrl",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_management_url: Option<String>,
     #[serde(rename = "extendInfo", skip_serializing_if = "Option::is_none")]
     pub extend_info: Option<String>,
@@ -637,13 +738,25 @@ pub struct ChangeSubscriptionParams {
 /// `ChangeSubscriptionData` represents the response data for subscription change.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChangeSubscriptionData {
-    #[serde(rename = "originSubscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "originSubscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub origin_subscription_request: Option<String>,
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
-    #[serde(rename = "subscriptionChangeStatus", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionChangeStatus",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_change_status: Option<String>,
     #[serde(rename = "subscriptionAction", skip_serializing_if = "Option::is_none")]
     pub subscription_action: Option<String>,
@@ -660,6 +773,11 @@ impl ChangeSubscriptionData {
     /// trim; if it starts with `http://`/`https://` return it; otherwise parse
     /// as JSON `{webUrl}` and return `webUrl` if non-empty, else `""`.
     pub fn fetch_redirect_url(&self) -> String {
+        #[derive(Deserialize)]
+        struct Action {
+            #[serde(rename = "webUrl", default)]
+            web_url: String,
+        }
         let action = self.subscription_action.as_deref().unwrap_or("");
         if action.is_empty() {
             return String::new();
@@ -667,11 +785,6 @@ impl ChangeSubscriptionData {
         let trimmed = action.trim();
         if trimmed.starts_with("http://") || trimmed.starts_with("https://") {
             return trimmed.to_string();
-        }
-        #[derive(Deserialize)]
-        struct Action {
-            #[serde(rename = "webUrl", default)]
-            web_url: String,
         }
         if let Ok(a) = serde_json::from_str::<Action>(trimmed) {
             if !a.web_url.is_empty() {
@@ -717,15 +830,27 @@ pub struct ChangeInquiryParams {
 /// `ChangeInquiryData` represents the response data for subscription change inquiry.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ChangeInquiryData {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
-    #[serde(rename = "originSubscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "originSubscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub origin_subscription_request: Option<String>,
-    #[serde(rename = "merchantSubscriptionId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantSubscriptionId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_subscription_id: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
-    #[serde(rename = "subscriptionChangeStatus", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionChangeStatus",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_change_status: Option<String>,
     #[serde(rename = "subscriptionAction", skip_serializing_if = "Option::is_none")]
     pub subscription_action: Option<String>,
@@ -737,13 +862,20 @@ pub struct ChangeInquiryData {
     pub user_currency: Option<String>,
     #[serde(rename = "requestedAt", skip_serializing_if = "Option::is_none")]
     pub requested_at: Option<String>,
-    #[serde(rename = "subscriptionManagementUrl", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionManagementUrl",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_management_url: Option<String>,
     #[serde(rename = "extendInfo", skip_serializing_if = "Option::is_none")]
     pub extend_info: Option<String>,
     #[serde(rename = "orderExpiredAt", skip_serializing_if = "Option::is_none")]
     pub order_expired_at: Option<String>,
-    #[serde(rename = "productInfoList", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "productInfoList",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub product_info_list: Vec<SubscriptionChangeProductInfo>,
     #[serde(rename = "merchantInfo", skip_serializing_if = "Option::is_none")]
     pub merchant_info: Option<SubscriptionMerchantInfo>,
@@ -783,7 +915,10 @@ pub async fn change_inquiry(
 /// `UpdateSubscriptionParams` represents the parameters for updating a subscription.
 #[derive(Debug, Clone, Default, Serialize, Deserialize, waffo_rs::WaffoRequest)]
 pub struct UpdateSubscriptionParams {
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
@@ -800,21 +935,41 @@ pub struct UpdateSubscriptionParams {
 pub struct UpdateSubscriptionData {
     #[serde(rename = "subscriptionId", skip_serializing_if = "Option::is_none")]
     pub subscription_id: Option<String>,
-    #[serde(rename = "subscriptionRequest", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "subscriptionRequest",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub subscription_request: Option<String>,
-    #[serde(rename = "previousTrialPeriodAmount", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "previousTrialPeriodAmount",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub previous_trial_period_amount: Option<String>,
-    #[serde(rename = "newTrialPeriodAmount", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "newTrialPeriodAmount",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub new_trial_period_amount: Option<String>,
     #[serde(rename = "previousAmount", skip_serializing_if = "Option::is_none")]
     pub previous_amount: Option<String>,
     #[serde(rename = "newAmount", skip_serializing_if = "Option::is_none")]
     pub new_amount: Option<String>,
-    #[serde(rename = "previousScheduledAmounts", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "previousScheduledAmounts",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub previous_scheduled_amounts: Vec<ScheduledAmount>,
-    #[serde(rename = "newScheduledAmounts", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "newScheduledAmounts",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub new_scheduled_amounts: Vec<ScheduledAmount>,
-    #[serde(rename = "nextEffectivePeriod", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "nextEffectivePeriod",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub next_effective_period: Option<String>,
     #[serde(flatten)]
     pub extra: serde_json::Map<String, serde_json::Value>,

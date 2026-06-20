@@ -67,7 +67,9 @@ impl WaffoConfig {
             private_key: req("WAFFO_PRIVATE_KEY")?,
             waffo_public_key: req("WAFFO_PUBLIC_KEY")?,
             environment,
-            merchant_id: std::env::var("WAFFO_MERCHANT_ID").ok().filter(|s| !s.is_empty()),
+            merchant_id: std::env::var("WAFFO_MERCHANT_ID")
+                .ok()
+                .filter(|s| !s.is_empty()),
             connect_timeout_ms: 10_000,
             read_timeout_ms: 30_000,
             debug_unredacted: false,
@@ -89,34 +91,42 @@ pub struct ConfigBuilder {
 }
 
 impl ConfigBuilder {
+    #[must_use]
     pub fn api_key(mut self, v: impl Into<String>) -> Self {
         self.api_key = Some(v.into());
         self
     }
+    #[must_use]
     pub fn private_key(mut self, v: impl Into<String>) -> Self {
         self.private_key = Some(v.into());
         self
     }
+    #[must_use]
     pub fn waffo_public_key(mut self, v: impl Into<String>) -> Self {
         self.waffo_public_key = Some(v.into());
         self
     }
+    #[must_use]
     pub fn environment(mut self, v: Environment) -> Self {
         self.environment = v;
         self
     }
+    #[must_use]
     pub fn merchant_id(mut self, v: impl Into<String>) -> Self {
         self.merchant_id = Some(v.into());
         self
     }
+    #[must_use]
     pub fn connect_timeout_ms(mut self, v: u64) -> Self {
         self.connect_timeout_ms = Some(v);
         self
     }
+    #[must_use]
     pub fn read_timeout_ms(mut self, v: u64) -> Self {
         self.read_timeout_ms = Some(v);
         self
     }
+    #[must_use]
     pub fn debug_unredacted(mut self, v: bool) -> Self {
         self.debug_unredacted = v;
         self

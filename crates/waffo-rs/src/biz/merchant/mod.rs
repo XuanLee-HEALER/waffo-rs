@@ -19,10 +19,7 @@ pub struct InquiryMerchantConfigParams {
     /// Merchant id (required; not auto-injected).
     #[serde(rename = "merchantId")]
     pub merchant_id: String,
-    #[serde(
-        rename = "extraParams",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(rename = "extraParams", skip_serializing_if = "Option::is_none")]
     pub extra_params: Option<waffo_rs::ExtraParams>,
 }
 
@@ -64,10 +61,7 @@ pub struct InquiryPayMethodConfigParams {
     /// Merchant id (required; not auto-injected).
     #[serde(rename = "merchantId")]
     pub merchant_id: String,
-    #[serde(
-        rename = "extraParams",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(rename = "extraParams", skip_serializing_if = "Option::is_none")]
     pub extra_params: Option<waffo_rs::ExtraParams>,
 }
 

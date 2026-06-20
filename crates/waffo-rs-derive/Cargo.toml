@@ -10,6 +10,9 @@ repository = "https://github.com/XuanLee-HEALER/waffo-rs"
 [lib]
 proc-macro = true
 
+[lints]
+workspace = true
+
 [dependencies]
 syn = "2"
 quote = "1"

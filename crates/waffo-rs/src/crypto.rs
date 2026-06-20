@@ -69,8 +69,8 @@ pub struct KeyPair {
 /// Generate an RSA-2048 key pair for testing / key rotation.
 pub fn generate_key_pair() -> Result<KeyPair> {
     let mut rng = rand::thread_rng();
-    let private = RsaPrivateKey::new(&mut rng, 2048)
-        .map_err(|e| WaffoError::SigningFailed(e.to_string()))?;
+    let private =
+        RsaPrivateKey::new(&mut rng, 2048).map_err(|e| WaffoError::SigningFailed(e.to_string()))?;
     let public = private.to_public_key();
     let private_der = private
         .to_pkcs8_der()

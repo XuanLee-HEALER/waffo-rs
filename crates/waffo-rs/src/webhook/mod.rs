@@ -34,11 +34,10 @@ pub use events::{
     EVENT_SUBSCRIPTION_STATUS, ORDER_STATUS_AUTHED_WAITING_CAPTURE,
     ORDER_STATUS_AUTHORIZATION_REQUIRED, ORDER_STATUS_ORDER_CLOSE, ORDER_STATUS_PAY_IN_PROGRESS,
     ORDER_STATUS_PAY_SUCCESS, REFUND_STATUS_FAILED, REFUND_STATUS_FULLY_REFUNDED,
-    REFUND_STATUS_IN_PROGRESS, REFUND_STATUS_PARTIALLY_REFUNDED,
-    SUBSCRIPTION_STATUS_ACTIVE, SUBSCRIPTION_STATUS_AUTHORIZATION_REQUIRED,
-    SUBSCRIPTION_STATUS_CHANNEL_CANCELLED, SUBSCRIPTION_STATUS_CLOSE, SUBSCRIPTION_STATUS_EXPIRED,
-    SUBSCRIPTION_STATUS_IN_PROGRESS, SUBSCRIPTION_STATUS_MERCHANT_CANCELLED,
-    SUBSCRIPTION_STATUS_USER_CANCELLED,
+    REFUND_STATUS_IN_PROGRESS, REFUND_STATUS_PARTIALLY_REFUNDED, SUBSCRIPTION_STATUS_ACTIVE,
+    SUBSCRIPTION_STATUS_AUTHORIZATION_REQUIRED, SUBSCRIPTION_STATUS_CHANNEL_CANCELLED,
+    SUBSCRIPTION_STATUS_CLOSE, SUBSCRIPTION_STATUS_EXPIRED, SUBSCRIPTION_STATUS_IN_PROGRESS,
+    SUBSCRIPTION_STATUS_MERCHANT_CANCELLED, SUBSCRIPTION_STATUS_USER_CANCELLED,
 };
 pub use notification::{
     FailureReason, PaymentNotificationResult, RefundNotificationResult,
@@ -72,16 +71,6 @@ struct Envelope<'a> {
 /// [`WebhookEvent`] variant. An unknown `eventType` yields
 /// [`WaffoError::Api`] with code `UNKNOWN_EVENT_TYPE`.
 pub fn verify_and_parse(client: &Client, body: &[u8], signature: &str) -> Result<WebhookEvent> {
-    // 1. Signature: empty or invalid -> verification failed.
-    if signature.is_empty() {
-        return Err(WaffoError::VerificationFailed);
-    }
-    crate::crypto::verify(client.public_key(), body, signature)?;
-
-    // 2. Parse the envelope and route on eventType.
-    let envelope: Envelope = serde_json::from_slice(body)?;
-    let raw = envelope.result.map(|r| r.get()).unwrap_or("null");
-
     // A missing/`null` `result` maps to a default-filled result struct rather
     // than an error (Go leaves the `Result` pointer nil without failing).
     fn parse_result<T: serde::de::DeserializeOwned + Default>(raw: &str) -> Result<T> {
@@ -91,6 +80,18 @@ pub fn verify_and_parse(client: &Client, body: &[u8], signature: &str) -> Result
             Ok(serde_json::from_str(raw)?)
         }
     }
+
+    // 1. Signature: empty or invalid -> verification failed.
+    if signature.is_empty() {
+        return Err(WaffoError::VerificationFailed);
+    }
+    crate::crypto::verify(client.public_key(), body, signature)?;
+
+    // 2. Parse the envelope and route on eventType.
+    let envelope: Envelope = serde_json::from_slice(body)?;
+    let raw = envelope
+        .result
+        .map_or("null", serde_json::value::RawValue::get);
 
     let event = match envelope.event_type.as_str() {
         EVENT_PAYMENT => WebhookEvent::Payment(parse_result(raw)?),

@@ -11,3 +11,7 @@ Cargo.lock
 *.swp
 .DS_Store
 Thumbs.db
+
+# Local-only design / analysis docs (kept in the working tree, not published)
+/docs/WAFFO_RS_DESIGN.md
+/docs/WAFFO_GO_ANALYSIS.md

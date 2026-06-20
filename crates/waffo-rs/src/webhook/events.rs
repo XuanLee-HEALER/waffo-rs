@@ -190,9 +190,7 @@ impl SubscriptionStatus {
     /// The canonical wire string for this status.
     pub fn as_str(&self) -> &str {
         match self {
-            SubscriptionStatus::AuthorizationRequired => {
-                SUBSCRIPTION_STATUS_AUTHORIZATION_REQUIRED
-            }
+            SubscriptionStatus::AuthorizationRequired => SUBSCRIPTION_STATUS_AUTHORIZATION_REQUIRED,
             SubscriptionStatus::InProgress => SUBSCRIPTION_STATUS_IN_PROGRESS,
             SubscriptionStatus::Active => SUBSCRIPTION_STATUS_ACTIVE,
             SubscriptionStatus::Close => SUBSCRIPTION_STATUS_CLOSE,

@@ -10,6 +10,9 @@ repository = "https://github.com/XuanLee-HEALER/waffo-rs"
 [lib]
 name = "waffo_rs"
 
+[lints]
+workspace = true
+
 [dependencies]
 waffo-rs-derive = { path = "../waffo-rs-derive", version = "0.1.0" }
 serde = { version = "1", features = ["derive"] }

@@ -83,7 +83,10 @@ pub struct PaymentInfo {
     pub user_payment_access_token: Option<String>,
     #[serde(rename = "captureMode", skip_serializing_if = "Option::is_none")]
     pub capture_mode: Option<String>,
-    #[serde(rename = "merchantInitiatedMode", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantInitiatedMode",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_initiated_mode: Option<String>,
 }
 
@@ -196,7 +199,10 @@ pub struct RiskData {
     pub user_last_seen_ip: Option<String>,
     #[serde(rename = "userIsNew", skip_serializing_if = "Option::is_none")]
     pub user_is_new: Option<String>,
-    #[serde(rename = "userIsFirstPurchase", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "userIsFirstPurchase",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub user_is_first_purchase: Option<String>,
 }
 
@@ -241,7 +247,11 @@ pub struct CardBinData {
     pub card_brand: Option<String>,
     #[serde(rename = "cardType", skip_serializing_if = "Option::is_none")]
     pub card_type: Option<String>,
-    #[serde(rename = "cardTypeList", default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(
+        rename = "cardTypeList",
+        default,
+        skip_serializing_if = "Vec::is_empty"
+    )]
     pub card_type_list: Vec<String>,
     #[serde(rename = "subCardType", skip_serializing_if = "Option::is_none")]
     pub sub_card_type: Option<String>,

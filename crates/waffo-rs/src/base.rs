@@ -70,7 +70,10 @@ impl Envelope {
     pub fn into_result<T: DeserializeOwned>(self) -> Result<T> {
         match self.code.as_str() {
             "0" => {
-                let raw = self.data.as_deref().map(|r| r.get()).unwrap_or("null");
+                let raw = self
+                    .data
+                    .as_deref()
+                    .map_or("null", serde_json::value::RawValue::get);
                 Ok(serde_json::from_str(raw)?)
             }
             "E0001" => Err(WaffoError::UnknownStatus {
@@ -175,10 +178,7 @@ impl Client {
     }
 
     fn verify_response(&self, headers: &reqwest::header::HeaderMap, body: &[u8]) -> Result<()> {
-        if let Some(sig) = headers
-            .get(HEADER_SIGNATURE)
-            .and_then(|v| v.to_str().ok())
-        {
+        if let Some(sig) = headers.get(HEADER_SIGNATURE).and_then(|v| v.to_str().ok()) {
             crypto::verify(&self.public_key, body, sig)?;
         }
         Ok(())

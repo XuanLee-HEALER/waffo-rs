@@ -13,7 +13,10 @@
 pub struct InquiryRefundParams {
     #[serde(rename = "refundRequestId")]
     pub refund_request_id: String,
-    #[serde(rename = "acquiringRefundOrderId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "acquiringRefundOrderId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub acquiring_refund_order_id: Option<String>,
     #[serde(rename = "extraParams", skip_serializing_if = "Option::is_none")]
     pub extra_params: Option<waffo_rs::ExtraParams>,
@@ -58,13 +61,22 @@ pub struct RefundUserInfo {
 pub struct InquiryRefundData {
     #[serde(rename = "refundRequestId", skip_serializing_if = "Option::is_none")]
     pub refund_request_id: Option<String>,
-    #[serde(rename = "merchantRefundOrderId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "merchantRefundOrderId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub merchant_refund_order_id: Option<String>,
     #[serde(rename = "acquiringOrderId", skip_serializing_if = "Option::is_none")]
     pub acquiring_order_id: Option<String>,
-    #[serde(rename = "acquiringRefundOrderId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "acquiringRefundOrderId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub acquiring_refund_order_id: Option<String>,
-    #[serde(rename = "origPaymentRequestId", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "origPaymentRequestId",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub orig_payment_request_id: Option<String>,
     #[serde(rename = "refundAmount", skip_serializing_if = "Option::is_none")]
     pub refund_amount: Option<String>,
@@ -88,7 +100,10 @@ pub struct InquiryRefundData {
     pub merchant_user_id: Option<String>,
     #[serde(rename = "subscriptionInfo", skip_serializing_if = "Option::is_none")]
     pub subscription_info: Option<crate::biz::subscription::SubscriptionInfo>,
-    #[serde(rename = "remainingRefundAmount", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "remainingRefundAmount",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub remaining_refund_amount: Option<String>,
     #[serde(rename = "userInfo", skip_serializing_if = "Option::is_none")]
     pub user_info: Option<RefundUserInfo>,

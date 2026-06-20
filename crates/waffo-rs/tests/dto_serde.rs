@@ -86,7 +86,12 @@ fn create_order_data_wire_keys_and_forward_compat() {
     let obj = to_object(&data);
     assert_has_keys(
         &obj,
-        &["paymentRequestId", "merchantOrderId", "acquiringOrderId", "orderStatus"],
+        &[
+            "paymentRequestId",
+            "merchantOrderId",
+            "acquiringOrderId",
+            "orderStatus",
+        ],
     );
     assert_eq!(obj["acquiringOrderId"], Value::from("aq-789"));
     assert_eq!(obj["orderStatus"], Value::from("PAY_SUCCESS"));
@@ -119,7 +124,13 @@ fn inquiry_order_data_forward_compat() {
     let obj = to_object(&data);
     assert_has_keys(
         &obj,
-        &["paymentRequestId", "merchantOrderId", "orderStatus", "orderCurrency", "orderAmount"],
+        &[
+            "paymentRequestId",
+            "merchantOrderId",
+            "orderStatus",
+            "orderCurrency",
+            "orderAmount",
+        ],
     );
     assert_eq!(
         obj.get("futureOnlyField"),
@@ -147,10 +158,18 @@ fn refund_order_params_extra_params_serializes_under_extra_params_key() {
     let obj = to_object(&params);
     assert_has_keys(
         &obj,
-        &["refundRequestId", "acquiringOrderId", "refundAmount", "refundReason", "extraParams"],
+        &[
+            "refundRequestId",
+            "acquiringOrderId",
+            "refundAmount",
+            "refundReason",
+            "extraParams",
+        ],
     );
     // The escape hatch serializes under the exact "extraParams" wire key.
-    let ep = obj["extraParams"].as_object().expect("extraParams should be an object");
+    let ep = obj["extraParams"]
+        .as_object()
+        .expect("extraParams should be an object");
     assert_eq!(ep.get("customKey"), Some(&Value::from("customValue")));
 }
 
@@ -202,7 +221,12 @@ fn inquiry_subscription_data_forward_compat() {
     let obj = to_object(&data);
     assert_has_keys(
         &obj,
-        &["subscriptionRequest", "merchantSubscriptionId", "subscriptionId", "subscriptionStatus"],
+        &[
+            "subscriptionRequest",
+            "merchantSubscriptionId",
+            "subscriptionId",
+            "subscriptionStatus",
+        ],
     );
     assert!(
         obj.contains_key("brandNewServerField"),
@@ -269,7 +293,12 @@ fn webhook_payment_result_forward_compat() {
     let obj = to_object(&result);
     assert_has_keys(
         &obj,
-        &["paymentRequestId", "merchantOrderId", "acquiringOrderId", "orderStatus"],
+        &[
+            "paymentRequestId",
+            "merchantOrderId",
+            "acquiringOrderId",
+            "orderStatus",
+        ],
     );
     assert!(
         obj.contains_key("brandNewWebhookField"),

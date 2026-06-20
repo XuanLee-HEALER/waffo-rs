@@ -104,9 +104,17 @@ pub struct PaymentNotificationResult {
         skip_serializing_if = "String::is_empty"
     )]
     pub acquiring_order_id: String,
-    #[serde(rename = "orderStatus", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "orderStatus",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub order_status: String,
-    #[serde(rename = "orderAction", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "orderAction",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub order_action: String,
     #[serde(
         rename = "orderCurrency",
@@ -114,9 +122,17 @@ pub struct PaymentNotificationResult {
         skip_serializing_if = "String::is_empty"
     )]
     pub order_currency: String,
-    #[serde(rename = "orderAmount", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "orderAmount",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub order_amount: String,
-    #[serde(rename = "userCurrency", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "userCurrency",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub user_currency: String,
     #[serde(
         rename = "finalDealAmount",
@@ -136,13 +152,29 @@ pub struct PaymentNotificationResult {
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub merchant_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "userInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "userInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub user_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "goodsInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "goodsInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub goods_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "addressInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "addressInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub address_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "paymentInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "paymentInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub payment_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "orderRequestedAt",
@@ -174,7 +206,11 @@ pub struct PaymentNotificationResult {
         skip_serializing_if = "FailureReason::is_empty"
     )]
     pub order_failed_reason: FailureReason,
-    #[serde(rename = "extendInfo", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "extendInfo",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub extend_info: String,
     #[serde(
         rename = "subscriptionInfo",
@@ -233,9 +269,17 @@ pub struct RefundNotificationResult {
         skip_serializing_if = "String::is_empty"
     )]
     pub orig_payment_request_id: String,
-    #[serde(rename = "refundAmount", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "refundAmount",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub refund_amount: String,
-    #[serde(rename = "refundStatus", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "refundStatus",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub refund_status: String,
     #[serde(
         rename = "remainingRefundAmount",
@@ -243,7 +287,11 @@ pub struct RefundNotificationResult {
         skip_serializing_if = "String::is_empty"
     )]
     pub remaining_refund_amount: String,
-    #[serde(rename = "userCurrency", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "userCurrency",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub user_currency: String,
     #[serde(
         rename = "finalDealAmount",
@@ -251,7 +299,11 @@ pub struct RefundNotificationResult {
         skip_serializing_if = "String::is_empty"
     )]
     pub final_deal_amount: String,
-    #[serde(rename = "refundReason", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "refundReason",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub refund_reason: String,
     #[serde(
         rename = "refundRequestedAt",
@@ -277,11 +329,23 @@ pub struct RefundNotificationResult {
         skip_serializing_if = "FailureReason::is_empty"
     )]
     pub refund_failed_reason: FailureReason,
-    #[serde(rename = "userInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "userInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub user_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "refundSource", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "refundSource",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub refund_source: String,
-    #[serde(rename = "extendInfo", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "extendInfo",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub extend_info: String,
 
     /// Forward-compat catch-all for server fields the SDK does not yet model.
@@ -333,9 +397,17 @@ pub struct SubscriptionNotificationResult {
     pub currency: String,
     #[serde(rename = "amount", default, skip_serializing_if = "String::is_empty")]
     pub amount: String,
-    #[serde(rename = "userCurrency", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "userCurrency",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub user_currency: String,
-    #[serde(rename = "productInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "productInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub product_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "merchantInfo",
@@ -343,17 +415,41 @@ pub struct SubscriptionNotificationResult {
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub merchant_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "userInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "userInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub user_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "goodsInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "goodsInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub goods_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "addressInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "addressInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub address_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "paymentInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "paymentInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub payment_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "requestedAt", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "requestedAt",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub requested_at: String,
-    #[serde(rename = "updatedAt", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "updatedAt",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub updated_at: String,
     #[serde(
         rename = "failedReason",
@@ -361,7 +457,11 @@ pub struct SubscriptionNotificationResult {
         skip_serializing_if = "FailureReason::is_empty"
     )]
     pub failed_reason: FailureReason,
-    #[serde(rename = "extendInfo", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "extendInfo",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub extend_info: String,
     #[serde(
         rename = "subscriptionManagementUrl",
@@ -429,9 +529,17 @@ pub struct SubscriptionChangeNotificationResult {
     pub remaining_amount: String,
     #[serde(rename = "currency", default, skip_serializing_if = "String::is_empty")]
     pub currency: String,
-    #[serde(rename = "userCurrency", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "userCurrency",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub user_currency: String,
-    #[serde(rename = "requestedAt", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "requestedAt",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub requested_at: String,
     #[serde(
         rename = "subscriptionManagementUrl",
@@ -439,7 +547,11 @@ pub struct SubscriptionChangeNotificationResult {
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_management_url: String,
-    #[serde(rename = "extendInfo", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "extendInfo",
+        default,
+        skip_serializing_if = "String::is_empty"
+    )]
     pub extend_info: String,
     #[serde(
         rename = "orderExpiredAt",
@@ -459,13 +571,29 @@ pub struct SubscriptionChangeNotificationResult {
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub merchant_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "userInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "userInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub user_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "goodsInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "goodsInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub goods_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "addressInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "addressInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub address_info: HashMap<String, serde_json::Value>,
-    #[serde(rename = "paymentInfo", default, skip_serializing_if = "HashMap::is_empty")]
+    #[serde(
+        rename = "paymentInfo",
+        default,
+        skip_serializing_if = "HashMap::is_empty"
+    )]
     pub payment_info: HashMap<String, serde_json::Value>,
 
     /// Forward-compat catch-all for server fields the SDK does not yet model.

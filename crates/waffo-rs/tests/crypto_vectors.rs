@@ -50,8 +50,7 @@ const GO_VECTORS: &[(&str, &str)] = &[
 fn parses_go_generated_keys() {
     crypto::parse_private_key(GO_PRIVATE_KEY)
         .expect("Go-generated PKCS#8 private key should parse");
-    crypto::parse_public_key(GO_PUBLIC_KEY)
-        .expect("Go-generated X.509 public key should parse");
+    crypto::parse_public_key(GO_PUBLIC_KEY).expect("Go-generated X.509 public key should parse");
 }
 
 /// The crux of "对标 go SDK": signing the same bytes with the same key must
@@ -101,7 +100,7 @@ const PAYLOADS: &[&str] = &[
     // unicode_data
     r#"{"description":"测试订单","amount":"100.00"}"#,
     // empty_object
-    r#"{}"#,
+    r"{}",
     // complex_nested
     r#"{"order":{"id":"123","items":[{"name":"Product","qty":1}]},"user":{"email":"test@example.com"}}"#,
     // special_characters
@@ -134,7 +133,7 @@ fn sign_and_verify_roundtrip() {
         crypto::verify(&pub_key, data.as_bytes(), &signature)
             .unwrap_or_else(|_| panic!("verify() should accept a valid signature for: {data:?}"));
 
-        let mut tampered = data.to_string();
+        let mut tampered = (*data).to_string();
         tampered.push('x');
         assert!(
             crypto::verify(&pub_key, tampered.as_bytes(), &signature).is_err(),
