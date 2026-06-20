@@ -26,7 +26,7 @@ pub mod axum;
 use serde::Deserialize;
 
 use crate::base::Client;
-use crate::error::{Result, WaffoError};
+use crate::common::error::{Result, WaffoError};
 
 pub use events::{
     OrderStatus, RefundStatus, SubscriptionDispatch, SubscriptionStatus, WebhookEvent,
@@ -83,9 +83,13 @@ pub fn verify_and_parse(client: &Client, body: &[u8], signature: &str) -> Result
 
     // 1. Signature: empty or invalid -> verification failed.
     if signature.is_empty() {
+        tracing::warn!("webhook rejected: missing signature");
         return Err(WaffoError::VerificationFailed);
     }
-    crate::crypto::verify(client.public_key(), body, signature)?;
+    if let Err(e) = crate::crypto::verify(client.public_key(), body, signature) {
+        tracing::warn!("webhook rejected: signature verification failed");
+        return Err(e);
+    }
 
     // 2. Parse the envelope and route on eventType.
     let envelope: Envelope = serde_json::from_slice(body)?;
@@ -102,12 +106,14 @@ pub fn verify_and_parse(client: &Client, body: &[u8], signature: &str) -> Result
         }
         EVENT_SUBSCRIPTION_CHANGE => WebhookEvent::SubscriptionChange(parse_result(raw)?),
         other => {
+            tracing::warn!(event_type = %other, "unknown webhook event type");
             return Err(WaffoError::Api {
                 code: "UNKNOWN_EVENT_TYPE".to_string(),
                 message: format!("unknown webhook event type: {other}"),
             });
         }
     };
+    tracing::debug!(event_type = %envelope.event_type, "webhook verified and parsed");
     Ok(event)
 }
 
@@ -125,5 +131,6 @@ pub fn build_signed_response(client: &Client, ok: bool) -> Result<(String, Strin
         RESPONSE_BODY_FAILED
     };
     let signature = crate::crypto::sign(client.private_key(), body.as_bytes())?;
+    tracing::debug!(ok, "built signed webhook response");
     Ok((body.to_string(), signature))
 }

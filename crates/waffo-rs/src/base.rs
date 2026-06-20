@@ -12,9 +12,10 @@ use rsa::{RsaPrivateKey, RsaPublicKey};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
+use crate::common::error::{Result, WaffoError};
+use crate::common::trace::redact;
 use crate::config::{RequestOptions, WaffoConfig};
 use crate::crypto;
-use crate::error::{Result, WaffoError};
 
 pub const HEADER_API_KEY: &str = "X-API-KEY";
 pub const HEADER_SIGNATURE: &str = "X-SIGNATURE";
@@ -107,12 +108,18 @@ impl Client {
             .timeout(Duration::from_millis(config.read_timeout_ms))
             .build()
             .map_err(WaffoError::Transport)?;
-        Ok(Client {
+        let client = Client {
             config,
             http,
             private_key,
             public_key,
-        })
+        };
+        tracing::debug!(
+            environment = ?client.config.environment,
+            base_url = client.config.base_url(),
+            "waffo client created",
+        );
+        Ok(client)
     }
 
     /// Construct a client with a caller-provided `reqwest::Client` (proxy, TLS,
@@ -196,6 +203,8 @@ pub async fn send_with<E: Endpoint>(
     mut req: E::Req,
     opts: Option<&RequestOptions>,
 ) -> Result<E::Resp> {
+    let unredacted = client.config.debug_unredacted;
+
     // ---- request side ----
     let now = crypto::now_iso8601();
     let ctx = InjectCtx {
@@ -204,25 +213,72 @@ pub async fn send_with<E: Endpoint>(
     };
     req.inject(&ctx);
     let body = serde_json::to_vec(&req)?;
-    let signature = client.sign(&body)?;
+    tracing::info!(method = "POST", path = E::PATH, "waffo request");
+
+    let signature = match client.sign(&body) {
+        Ok(sig) => sig,
+        Err(e) => {
+            tracing::error!(path = E::PATH, error = %e, "request signing failed");
+            return Err(e);
+        }
+    };
+    tracing::debug!(
+        path = E::PATH,
+        body = %redact(&String::from_utf8_lossy(&body), unredacted),
+        signature = %redact(&signature, unredacted),
+        "signed request",
+    );
 
     // ---- send (read endpoints fold transport failures into UnknownStatus) ----
     let (headers, bytes) = match client.post(E::PATH, body, &signature, opts).await {
         Ok(v) => v,
         Err(e) => {
-            return Err(if E::READ {
-                WaffoError::UnknownStatus {
+            if E::READ {
+                tracing::warn!(
+                    path = E::PATH,
+                    error = %e,
+                    "transport failure on read endpoint; reporting unknown status",
+                );
+                return Err(WaffoError::UnknownStatus {
                     code: "E0001".to_string(),
                     message: e.to_string(),
-                }
-            } else {
-                e
-            });
+                });
+            }
+            tracing::error!(path = E::PATH, error = %e, "transport error");
+            return Err(e);
         }
     };
 
     // ---- response side ----
-    client.verify_response(&headers, &bytes)?;
+    if let Err(e) = client.verify_response(&headers, &bytes) {
+        tracing::error!(path = E::PATH, "response signature verification failed");
+        return Err(e);
+    }
+    tracing::debug!(
+        path = E::PATH,
+        response = %redact(&String::from_utf8_lossy(&bytes), unredacted),
+        "received response",
+    );
+
     let envelope: Envelope = serde_json::from_slice(&bytes)?;
-    envelope.into_result::<E::Resp>()
+    match envelope.into_result::<E::Resp>() {
+        Ok(resp) => {
+            tracing::info!(path = E::PATH, "waffo request succeeded");
+            Ok(resp)
+        }
+        Err(e) => {
+            match &e {
+                WaffoError::UnknownStatus { code, .. } => {
+                    tracing::warn!(path = E::PATH, code = code.as_str(), "waffo unknown status");
+                }
+                WaffoError::Api { code, .. } => {
+                    tracing::warn!(path = E::PATH, code = code.as_str(), "waffo business error");
+                }
+                other => {
+                    tracing::error!(path = E::PATH, error = %other, "response decode failed");
+                }
+            }
+            Err(e)
+        }
+    }
 }

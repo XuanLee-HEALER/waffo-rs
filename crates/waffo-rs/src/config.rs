@@ -1,7 +1,7 @@
 //! Configuration: [`WaffoConfig`], its [`ConfigBuilder`], [`Environment`] and
 //! per-request [`RequestOptions`].
 
-use crate::error::{Result, WaffoError};
+use crate::common::error::{Result, WaffoError};
 
 /// Target environment; selects the API base URL.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]

@@ -35,7 +35,7 @@ use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::Response;
 
 use crate::base::Client;
-use crate::error::Result;
+use crate::common::error::Result;
 
 use super::{build_signed_response, verify_and_parse, WebhookEvent};
 

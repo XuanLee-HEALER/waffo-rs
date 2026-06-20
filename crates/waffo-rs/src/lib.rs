@@ -18,13 +18,12 @@ pub mod biz;
 pub mod common;
 pub mod config;
 pub mod crypto;
-pub mod error;
 pub mod webhook;
 
 pub use base::{Client, Endpoint, ExtraParams, WaffoRequest};
+pub use common::error::{Result, WaffoError};
 pub use config::{ConfigBuilder, Environment, RequestOptions, WaffoConfig};
 pub use crypto::{generate_key_pair, KeyPair};
-pub use error::{Result, WaffoError};
 
 // Derive macro; shares its name with the `WaffoRequest` trait (like serde's
 // `Serialize` trait + derive). Lives in a separate proc-macro crate.

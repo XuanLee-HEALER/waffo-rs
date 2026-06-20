@@ -8,7 +8,7 @@ use rsa::pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePubl
 use rsa::{Pkcs1v15Sign, RsaPrivateKey, RsaPublicKey};
 use sha2::{Digest, Sha256};
 
-use crate::error::{Result, WaffoError};
+use crate::common::error::{Result, WaffoError};
 
 /// Timestamp format used for all `*RequestedAt` fields (UTC, 3-digit millis).
 pub const TIMESTAMP_FORMAT: &str = "%Y-%m-%dT%H:%M:%S%.3fZ";
