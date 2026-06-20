@@ -32,6 +32,9 @@ pub struct WaffoConfig {
     pub waffo_public_key: String,
     /// Target environment.
     pub environment: Environment,
+    /// Override the API base URL (testing / self-hosted / custom endpoints).
+    /// When `None`, the environment's URL is used.
+    pub base_url_override: Option<String>,
     /// Optional merchant id; auto-injected into requests when set.
     pub merchant_id: Option<String>,
     /// TCP connect timeout (ms).
@@ -48,9 +51,12 @@ impl WaffoConfig {
         ConfigBuilder::default()
     }
 
-    /// Base URL for the configured environment.
-    pub fn base_url(&self) -> &'static str {
-        self.environment.base_url()
+    /// Base URL: the [`Self::base_url_override`] when set, else the
+    /// environment's URL.
+    pub fn base_url(&self) -> &str {
+        self.base_url_override
+            .as_deref()
+            .unwrap_or_else(|| self.environment.base_url())
     }
 
     /// Build from `WAFFO_*` environment variables.
@@ -67,6 +73,9 @@ impl WaffoConfig {
             private_key: req("WAFFO_PRIVATE_KEY")?,
             waffo_public_key: req("WAFFO_PUBLIC_KEY")?,
             environment,
+            base_url_override: std::env::var("WAFFO_BASE_URL")
+                .ok()
+                .filter(|s| !s.is_empty()),
             merchant_id: std::env::var("WAFFO_MERCHANT_ID")
                 .ok()
                 .filter(|s| !s.is_empty()),
@@ -84,6 +93,7 @@ pub struct ConfigBuilder {
     private_key: Option<String>,
     waffo_public_key: Option<String>,
     environment: Environment,
+    base_url_override: Option<String>,
     merchant_id: Option<String>,
     connect_timeout_ms: Option<u64>,
     read_timeout_ms: Option<u64>,
@@ -109,6 +119,12 @@ impl ConfigBuilder {
     #[must_use]
     pub fn environment(mut self, v: Environment) -> Self {
         self.environment = v;
+        self
+    }
+    /// Override the API base URL (testing / self-hosted / custom endpoints).
+    #[must_use]
+    pub fn base_url(mut self, v: impl Into<String>) -> Self {
+        self.base_url_override = Some(v.into());
         self
     }
     #[must_use]
@@ -149,6 +165,7 @@ impl ConfigBuilder {
                 .filter(|s| !s.is_empty())
                 .ok_or_else(|| WaffoError::Config("waffo_public_key is required".into()))?,
             environment: self.environment,
+            base_url_override: self.base_url_override.filter(|s| !s.is_empty()),
             merchant_id: self.merchant_id.filter(|s| !s.is_empty()),
             connect_timeout_ms: self.connect_timeout_ms.unwrap_or(10_000),
             read_timeout_ms: self.read_timeout_ms.unwrap_or(30_000),
