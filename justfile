@@ -29,9 +29,15 @@ fmt-check:
 lint:
     cargo clippy --all-targets --all-features -- -D warnings
 
-# Run the test suite (all features).
+# Run the test suite (all features). Excludes the ignored sandbox e2e tests.
 test:
     cargo test --all-features
+
+# Run the sandbox end-to-end tests. Needs WAFFO_* credentials in the env
+# (WAFFO_API_KEY / WAFFO_PRIVATE_KEY / WAFFO_PUBLIC_KEY [+ WAFFO_MERCHANT_ID,
+# WAFFO_ENVIRONMENT=SANDBOX]).
+e2e:
+    cargo test --test e2e -- --ignored --nocapture
 
 # Build the whole workspace (all features).
 build:
