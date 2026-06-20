@@ -4,16 +4,18 @@ members = ["crates/waffo-rs", "crates/waffo-rs-derive"]
 
 [workspace.package]
 version = "0.1.0"
-edition = "2021"
-license = "MIT OR Apache-2.0"
-rust-version = "1.75"
+edition = "2024"
+license = "MIT"
+rust-version = "1.85"
 
 # Strict quality gate. clippy is the linter (rustfmt is the formatter, see
 # rustfmt.toml). Deny clippy::all and clippy::pedantic; the allow-list below
 # turns off only the opinionated/doc-noise pedantic lints that are not worth the
 # churn for an SDK of this shape.
+# `deny` (not `forbid`) so test-only env manipulation can opt in locally; the
+# library source itself contains no unsafe code.
 [workspace.lints.rust]
-unsafe_code = "forbid"
+unsafe_code = "deny"
 
 [workspace.lints.clippy]
 all = { level = "deny", priority = -1 }

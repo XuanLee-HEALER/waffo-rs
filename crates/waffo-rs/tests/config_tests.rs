@@ -94,10 +94,23 @@ fn request_options_default_is_empty() {
     assert!(o.headers.is_empty());
 }
 
+// In edition 2024 `std::env::set_var` / `remove_var` are `unsafe` (they race
+// with concurrent env reads). These wrappers opt in locally; the test only
+// touches uniquely-named WAFFO_* vars that no other test reads or writes.
+#[allow(unsafe_code)]
+fn set_env(key: &str, value: &str) {
+    // SAFETY: no other thread accesses these specific vars during the test.
+    unsafe { std::env::set_var(key, value) };
+}
+
+#[allow(unsafe_code)]
+fn remove_env(key: &str) {
+    // SAFETY: see `set_env`.
+    unsafe { std::env::remove_var(key) };
+}
+
 #[test]
 fn from_env_reads_validates_and_errors() {
-    use std::env;
-
     const VARS: [&str; 5] = [
         "WAFFO_API_KEY",
         "WAFFO_PRIVATE_KEY",
@@ -106,11 +119,11 @@ fn from_env_reads_validates_and_errors() {
         "WAFFO_MERCHANT_ID",
     ];
 
-    env::set_var("WAFFO_API_KEY", "envkey");
-    env::set_var("WAFFO_PRIVATE_KEY", "envpriv");
-    env::set_var("WAFFO_PUBLIC_KEY", "envpub");
-    env::set_var("WAFFO_ENVIRONMENT", "PRODUCTION");
-    env::set_var("WAFFO_MERCHANT_ID", "envM");
+    set_env("WAFFO_API_KEY", "envkey");
+    set_env("WAFFO_PRIVATE_KEY", "envpriv");
+    set_env("WAFFO_PUBLIC_KEY", "envpub");
+    set_env("WAFFO_ENVIRONMENT", "PRODUCTION");
+    set_env("WAFFO_MERCHANT_ID", "envM");
 
     let cfg = WaffoConfig::from_env().expect("from_env should succeed");
     assert_eq!(cfg.api_key, "envkey");
@@ -120,17 +133,17 @@ fn from_env_reads_validates_and_errors() {
     assert_eq!(cfg.merchant_id.as_deref(), Some("envM"));
 
     // Any non-"PRODUCTION" value falls back to Sandbox.
-    env::set_var("WAFFO_ENVIRONMENT", "anything-else");
+    set_env("WAFFO_ENVIRONMENT", "anything-else");
     assert_eq!(
         WaffoConfig::from_env().unwrap().environment,
         Environment::Sandbox
     );
 
     // A missing required variable is an error.
-    env::remove_var("WAFFO_API_KEY");
+    remove_env("WAFFO_API_KEY");
     assert!(WaffoConfig::from_env().is_err());
 
     for v in VARS {
-        env::remove_var(v);
+        remove_env(v);
     }
 }

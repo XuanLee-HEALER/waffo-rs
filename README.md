@@ -165,5 +165,4 @@ Includes RSA sign/verify vectors and JSON wire-format round-trip tests.
 
 ## License
 
-Licensed under either of [Apache-2.0](LICENSE-APACHE) or [MIT](LICENSE-MIT) at
-your option.
+Licensed under the [MIT License](LICENSE-MIT).

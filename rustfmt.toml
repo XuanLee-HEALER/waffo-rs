@@ -1,5 +1,5 @@
 # Formatter configuration (rustfmt). Stable options only.
-edition = "2021"
+edition = "2024"
 max_width = 100
 newline_style = "Unix"
 use_field_init_shorthand = true
