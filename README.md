@@ -2,6 +2,8 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
+[![crates.io](https://img.shields.io/crates/v/waffo-rs)](https://crates.io/crates/waffo-rs)
+[![docs.rs](https://img.shields.io/docsrs/waffo-rs)](https://docs.rs/waffo-rs)
 ![coverage](https://img.shields.io/badge/coverage-~95%25-brightgreen)
 ![rust](https://img.shields.io/badge/rust-1.96%2B-orange)
 ![license](https://img.shields.io/badge/license-MIT-blue)
@@ -17,7 +19,6 @@ shaped to be idiomatic and ergonomic for the Rust async ecosystem.
 > **Status: v1.0.** The full API surface is implemented, documented and tested —
 > unit + `wiremock` transport tests, plus end-to-end tests against the live
 > sandbox covering every endpoint and all six webhook events over a real tunnel.
-> Not yet published to crates.io (install via git for now).
 
 ## Highlights
 
@@ -47,18 +48,16 @@ shaped to be idiomatic and ergonomic for the Rust async ecosystem.
 
 ## Installation
 
-Not yet on crates.io — depend on it via git:
-
 ```toml
 [dependencies]
-waffo-rs = { git = "https://github.com/XuanLee-HEALER/waffo-rs" }
+waffo-rs = "1.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
 Enable the optional `axum` integration with:
 
 ```toml
-waffo-rs = { git = "https://github.com/XuanLee-HEALER/waffo-rs", features = ["axum"] }
+waffo-rs = { version = "1.0", features = ["axum"] }
 ```
 
 ## Quick start
