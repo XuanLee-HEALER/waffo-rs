@@ -1,28 +1,25 @@
 //! End-to-end tests against the real Waffo **sandbox**.
 //!
 //! Every test is `#[ignore]`d: they need real credentials (read from the
-//! environment via [`WaffoConfig::from_env`]) and live network, so they do not
-//! run in the normal suite, CI, or coverage. Run them explicitly:
+//! environment via [`WaffoConfig::from_env`], with a local `.env` loaded by
+//! `dotenvy`) and live network, so they do not run in the normal suite, CI, or
+//! coverage. Run them explicitly:
 //!
 //! ```sh
-//! WAFFO_MERCHANT_API_KEY=... WAFFO_MERCHANT_PRIVATE_KEY=... WAFFO_PUBLIC_KEY=... \
-//! WAFFO_MERCHANT_ID=... WAFFO_ENVIRONMENT=SANDBOX \
 //! cargo test --test e2e -- --ignored --nocapture
 //! ```
-//! (or `just e2e`).
-//!
-//! Webhooks are intentionally out of scope here.
+//! (or `just e2e`). Webhooks are intentionally out of scope here.
 //!
 //! ## What "passing" means
 //!
-//! These tests validate that the SDK can complete the request → signed
-//! response → verify → decode round-trip against the real server for every
-//! endpoint. A *business* outcome (server `code != "0"`, e.g. refunding an
-//! unpaid order) still counts as a successful round-trip — only an **SDK-level**
-//! failure (transport / serialization / signature / config) fails the test.
-//! Steps that require browser checkout (completing a payment, capturing an
-//! authorized card order) cannot be automated, so those endpoints are exercised
-//! for plumbing only.
+//! These tests validate that the SDK completes the request → signed response →
+//! verify → decode round-trip against the real server. A *business* outcome
+//! (server `code != "0"`) still counts as a successful round-trip — only an
+//! **SDK-level** failure (transport / serialization / signature / config) fails
+//! the test. The amount-driven error-simulation tests additionally assert the
+//! exact mapped error (see `docs/INTEGRATION.md`). Completing a payment requires
+//! the hosted cashier (browser), so `capture` / happy-path `refund` are
+//! exercised for plumbing only — a real refund needs a prerequisite paid order.
 
 use std::sync::atomic::{AtomicU64, Ordering};
 
@@ -34,7 +31,6 @@ use waffo_rs::{Client, WaffoConfig, WaffoError};
 // ---------------------------------------------------------------------------
 
 fn client_from_env() -> Client {
-    // Load a local .env file (workspace root, gitignored) once, if present.
     static INIT: std::sync::Once = std::sync::Once::new();
     INIT.call_once(|| {
         let _ = dotenvy::dotenv();
@@ -49,14 +45,14 @@ fn client_from_env() -> Client {
 
 static COUNTER: AtomicU64 = AtomicU64::new(0);
 
-/// A process-unique id with the given prefix.
+/// A short (<= 32 char) process-unique id. The API caps several id fields at 32.
 fn unique(prefix: &str) -> String {
     let n = COUNTER.fetch_add(1, Ordering::Relaxed);
-    let nanos = std::time::SystemTime::now()
+    let ms = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
-        .as_nanos();
-    format!("{prefix}_{nanos}_{n}")
+        .as_millis();
+    format!("{prefix}{ms}{n}")
 }
 
 /// True when the error is an SDK-level failure (not a server business outcome).
@@ -67,8 +63,8 @@ fn is_sdk_failure(err: &WaffoError) -> bool {
     )
 }
 
-/// Assert the SDK completed the round-trip. `Ok` or a server business error
-/// both pass; only an SDK-level failure panics.
+/// Assert the SDK completed the round-trip. `Ok` or a server business error both
+/// pass; only an SDK-level failure panics.
 fn assert_round_trip<T: std::fmt::Debug>(label: &str, result: waffo_rs::Result<T>) {
     match result {
         Ok(data) => println!("[{label}] ok: {data:?}"),
@@ -82,15 +78,16 @@ fn merchant_id(client: &Client) -> String {
 }
 
 // ---------------------------------------------------------------------------
-// param builders (merchant_info + *requested_at are auto-injected)
+// param builders (merchant_info + *requested_at are auto-injected; payMethodType
+// is left unset so the cashier offers every method the merchant signed for)
 // ---------------------------------------------------------------------------
 
-fn create_order_params(rid: &str, oid: &str) -> order::CreateOrderParams {
+fn create_order_params(rid: &str, oid: &str, amount: &str) -> order::CreateOrderParams {
     order::CreateOrderParams {
         payment_request_id: rid.to_string(),
         merchant_order_id: oid.to_string(),
-        order_currency: "HKD".to_string(),
-        order_amount: "10.00".to_string(),
+        order_currency: "USD".to_string(),
+        order_amount: amount.to_string(),
         order_description: "waffo-rs e2e order".to_string(),
         notify_url: "https://httpbin.org/post".to_string(),
         success_redirect_url: Some("https://httpbin.org/get?status=success".to_string()),
@@ -102,9 +99,17 @@ fn create_order_params(rid: &str, oid: &str) -> order::CreateOrderParams {
             user_terminal: Some("WEB".to_string()),
             ..Default::default()
         }),
+        goods_info: Some(order::GoodsInfo {
+            goods_id: Some("e2e_goods".to_string()),
+            goods_name: Some("E2E Goods".to_string()),
+            goods_category: Some("GOODS".to_string()),
+            goods_url: Some("https://example.com/goods".to_string()),
+            goods_quantity: Some(1),
+            ..Default::default()
+        }),
         payment_info: Some(order::PaymentInfo {
             product_name: Some("ONE_TIME_PAYMENT".to_string()),
-            pay_method_type: Some("CREDITCARD".to_string()),
+            pay_method_name: Some("CC_VISA".to_string()),
             ..Default::default()
         }),
         ..Default::default()
@@ -115,7 +120,7 @@ fn create_subscription_params(sr: &str, msid: &str) -> subscription::CreateSubsc
     subscription::CreateSubscriptionParams {
         subscription_request: sr.to_string(),
         merchant_subscription_id: msid.to_string(),
-        currency: "HKD".to_string(),
+        currency: "USD".to_string(),
         amount: "99.00".to_string(),
         notify_url: "https://httpbin.org/post".to_string(),
         success_redirect_url: Some("https://httpbin.org/get?status=success".to_string()),
@@ -134,9 +139,17 @@ fn create_subscription_params(sr: &str, msid: &str) -> subscription::CreateSubsc
             user_terminal: Some("WEB".to_string()),
             ..Default::default()
         }),
+        goods_info: Some(subscription::SubscriptionGoodsInfo {
+            goods_id: Some("e2e_goods".to_string()),
+            goods_name: Some("E2E Subscription".to_string()),
+            goods_category: Some("SUBSCRIPTION".to_string()),
+            goods_url: Some("https://example.com/sub".to_string()),
+            goods_quantity: Some(1),
+            ..Default::default()
+        }),
         payment_info: Some(subscription::SubscriptionPaymentInfo {
             product_name: Some("SUBSCRIPTION".to_string()),
-            pay_method_type: Some("CREDITCARD".to_string()),
+            pay_method_name: Some("CC_VISA".to_string()),
             ..Default::default()
         }),
         ..Default::default()
@@ -144,7 +157,7 @@ fn create_subscription_params(sr: &str, msid: &str) -> subscription::CreateSubsc
 }
 
 // ---------------------------------------------------------------------------
-// config (pure reads — should succeed against a valid sandbox)
+// config (pure reads — succeed against a valid sandbox)
 // ---------------------------------------------------------------------------
 
 #[tokio::test]
@@ -181,25 +194,27 @@ async fn e2e_merchant_and_pay_method_config() {
 }
 
 // ---------------------------------------------------------------------------
-// order: create -> inquiry -> cancel -> refund -> capture
+// order: create -> inquiry -> cancel (positive flow up to the cashier)
 // ---------------------------------------------------------------------------
 
 #[tokio::test]
 #[ignore = "requires sandbox credentials via env; run with --ignored"]
-async fn e2e_order_endpoints() {
+async fn e2e_order_lifecycle() {
     let client = client_from_env();
-    let rid = unique("e2e_pay");
-    let oid = unique("E2E_ORDER");
+    let rid = unique("po");
+    let oid = unique("PO");
 
-    // create
-    let created = order::create(&client, create_order_params(&rid, &oid), None).await;
-    let acquiring_id = match &created {
-        Ok(d) => d.acquiring_order_id.clone().unwrap_or_default(),
-        Err(_) => String::new(),
-    };
+    let created = order::create(&client, create_order_params(&rid, &oid, "10.00"), None).await;
+    if let Ok(d) = &created {
+        println!(
+            "[order::create] status={:?} acquiringOrderId={:?} redirect={}",
+            d.order_status,
+            d.acquiring_order_id,
+            d.fetch_redirect_url()
+        );
+    }
     assert_round_trip("order::create", created);
 
-    // inquiry (by the payment request id we chose)
     assert_round_trip(
         "order::inquiry",
         order::inquiry(
@@ -213,27 +228,93 @@ async fn e2e_order_endpoints() {
         .await,
     );
 
-    // cancel (an unpaid order is cancellable; otherwise a business response)
     assert_round_trip(
         "order::cancel",
         order::cancel(
             &client,
             order::CancelOrderParams {
-                payment_request_id: Some(rid.clone()),
+                payment_request_id: Some(rid),
                 ..Default::default()
             },
             None,
         )
         .await,
     );
+}
 
-    // refund (needs a paid order -> expect a business response, plumbing only)
+// ---------------------------------------------------------------------------
+// order error simulations (sandbox triggers via orderAmount; see INTEGRATION.md)
+// ---------------------------------------------------------------------------
+
+#[tokio::test]
+#[ignore = "requires sandbox credentials via env; run with --ignored"]
+async fn e2e_order_error_simulations() {
+    let client = client_from_env();
+
+    // orderAmount 9.2/92/992/... -> E0001 Unknown Status -> WaffoError::UnknownStatus
+    let err = order::create(
+        &client,
+        create_order_params(&unique("po"), &unique("PO"), "992"),
+        None,
+    )
+    .await
+    .expect_err("amount 992 should be a business error");
+    println!("[sim E0001] {err}");
+    assert!(
+        err.is_unknown_status(),
+        "amount 992 should map to UnknownStatus (E0001); got {err:?}"
+    );
+
+    // orderAmount 9/90/990/... -> C0005 Payment Channel Rejection
+    let err = order::create(
+        &client,
+        create_order_params(&unique("po"), &unique("PO"), "990"),
+        None,
+    )
+    .await
+    .expect_err("amount 990 should be a business error");
+    println!("[sim C0005] {err}");
+    assert_eq!(err.api_code(), Some("C0005"), "amount 990 should be C0005");
+
+    // orderAmount 9.1/91/991/... -> C0001 System Error
+    let err = order::create(
+        &client,
+        create_order_params(&unique("po"), &unique("PO"), "991"),
+        None,
+    )
+    .await
+    .expect_err("amount 991 should be a business error");
+    println!("[sim C0001] {err}");
+    assert_eq!(err.api_code(), Some("C0001"), "amount 991 should be C0001");
+}
+
+// ---------------------------------------------------------------------------
+// refund / capture / inquiry-refund (need a paid / authorized order -> plumbing)
+// ---------------------------------------------------------------------------
+
+#[tokio::test]
+#[ignore = "requires sandbox credentials via env; run with --ignored"]
+async fn e2e_refund_and_capture() {
+    let client = client_from_env();
+    let rid = unique("po");
+    let oid = unique("PO");
+
+    // Create an (unpaid) order to obtain a real acquiringOrderId.
+    let created = order::create(&client, create_order_params(&rid, &oid, "10.00"), None).await;
+    let acquiring_id = created
+        .as_ref()
+        .ok()
+        .and_then(|d| d.acquiring_order_id.clone())
+        .unwrap_or_default();
+    assert_round_trip("order::create", created);
+
+    // Refunding an unpaid order -> business error (no successful payment yet).
     assert_round_trip(
         "order::refund",
         order::refund(
             &client,
             order::RefundOrderParams {
-                refund_request_id: unique("e2e_refund"),
+                refund_request_id: unique("rf"),
                 acquiring_order_id: acquiring_id.clone(),
                 refund_amount: "10.00".to_string(),
                 refund_reason: "e2e".to_string(),
@@ -244,7 +325,7 @@ async fn e2e_order_endpoints() {
         .await,
     );
 
-    // capture (needs an authorized card order -> business response, plumbing only)
+    // Capturing without an AUTHED_WAITING_CAPTURE order -> business error.
     assert_round_trip(
         "order::capture",
         order::capture(
@@ -259,19 +340,13 @@ async fn e2e_order_endpoints() {
         )
         .await,
     );
-}
 
-#[tokio::test]
-#[ignore = "requires sandbox credentials via env; run with --ignored"]
-async fn e2e_refund_inquiry() {
-    let client = client_from_env();
-    // No such refund exists -> business response, exercises the plumbing.
     assert_round_trip(
         "refund::inquiry",
         refund::inquiry(
             &client,
             refund::InquiryRefundParams {
-                refund_request_id: unique("e2e_refund"),
+                refund_request_id: unique("rf"),
                 ..Default::default()
             },
             None,
@@ -286,20 +361,27 @@ async fn e2e_refund_inquiry() {
 
 #[tokio::test]
 #[ignore = "requires sandbox credentials via env; run with --ignored"]
-async fn e2e_subscription_endpoints() {
+async fn e2e_subscription_lifecycle() {
     let client = client_from_env();
-    let sr = unique("e2e_sub");
-    let msid = unique("E2E_SUB");
+    let sr = unique("so");
+    let msid = unique("SO");
 
-    // create
     let created = subscription::create(&client, create_subscription_params(&sr, &msid), None).await;
-    let subscription_id = match &created {
-        Ok(d) => d.subscription_id.clone().unwrap_or_default(),
-        Err(_) => String::new(),
-    };
+    if let Ok(d) = &created {
+        println!(
+            "[subscription::create] status={:?} subscriptionId={:?} redirect={}",
+            d.subscription_status,
+            d.subscription_id,
+            d.fetch_redirect_url()
+        );
+    }
+    let subscription_id = created
+        .as_ref()
+        .ok()
+        .and_then(|d| d.subscription_id.clone())
+        .unwrap_or_default();
     assert_round_trip("subscription::create", created);
 
-    // inquiry
     assert_round_trip(
         "subscription::inquiry",
         subscription::inquiry(
@@ -313,7 +395,6 @@ async fn e2e_subscription_endpoints() {
         .await,
     );
 
-    // manage (management URL)
     assert_round_trip(
         "subscription::manage",
         subscription::manage(
@@ -328,7 +409,6 @@ async fn e2e_subscription_endpoints() {
         .await,
     );
 
-    // update (amount / scheduled amounts; needs an active subscription)
     assert_round_trip(
         "subscription::update",
         subscription::update(
@@ -344,7 +424,6 @@ async fn e2e_subscription_endpoints() {
         .await,
     );
 
-    // cancel
     assert_round_trip(
         "subscription::cancel",
         subscription::cancel(
@@ -367,20 +446,19 @@ async fn e2e_subscription_endpoints() {
 #[ignore = "requires sandbox credentials via env; run with --ignored"]
 async fn e2e_subscription_change() {
     let client = client_from_env();
-    let origin_sr = unique("e2e_orig_sub");
-    let new_sr = unique("e2e_new_sub");
+    let origin_sr = unique("so");
+    let new_sr = unique("sn");
 
-    // change (needs an existing origin subscription -> business response)
     assert_round_trip(
         "subscription::change",
         subscription::change(
             &client,
             subscription::ChangeSubscriptionParams {
                 subscription_request: new_sr.clone(),
-                merchant_subscription_id: Some(unique("E2E_CHANGE")),
+                merchant_subscription_id: Some(unique("SC")),
                 origin_subscription_request: origin_sr.clone(),
                 remaining_amount: "50.00".to_string(),
-                currency: "HKD".to_string(),
+                currency: "USD".to_string(),
                 notify_url: "https://httpbin.org/post".to_string(),
                 product_info_list: vec![subscription::SubscriptionChangeProductInfo {
                     description: "waffo-rs e2e upgrade".to_string(),
@@ -395,9 +473,15 @@ async fn e2e_subscription_change() {
                     user_email: Some("e2e@test.com".to_string()),
                     ..Default::default()
                 }),
+                goods_info: Some(subscription::SubscriptionGoodsInfo {
+                    goods_id: Some("e2e_goods".to_string()),
+                    goods_name: Some("E2E Subscription".to_string()),
+                    goods_category: Some("SUBSCRIPTION".to_string()),
+                    goods_quantity: Some(1),
+                    ..Default::default()
+                }),
                 payment_info: Some(subscription::SubscriptionPaymentInfo {
                     product_name: Some("SUBSCRIPTION".to_string()),
-                    pay_method_type: Some("CREDITCARD".to_string()),
                     ..Default::default()
                 }),
                 ..Default::default()
@@ -407,7 +491,6 @@ async fn e2e_subscription_change() {
         .await,
     );
 
-    // change inquiry (needs both request ids)
     assert_round_trip(
         "subscription::change_inquiry",
         subscription::change_inquiry(
