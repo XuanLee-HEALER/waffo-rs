@@ -3,6 +3,7 @@
 //! The SDK only *emits* `tracing` events (at debug/info/warn/error levels);
 //! installing a subscriber/provider is the host application's responsibility.
 
+pub(crate) mod de;
 pub mod error;
 pub mod trace;
 

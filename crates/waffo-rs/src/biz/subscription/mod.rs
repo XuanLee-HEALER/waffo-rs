@@ -80,6 +80,7 @@ pub struct ProductInfo {
     #[serde(
         rename = "scheduledAmounts",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub scheduled_amounts: Vec<ScheduledAmount>,
@@ -266,6 +267,7 @@ pub struct SubscriptionChangeProductInfo {
     #[serde(
         rename = "scheduledAmounts",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub scheduled_amounts: Vec<ScheduledAmount>,
@@ -279,6 +281,7 @@ pub struct UpdateProductInfo {
     #[serde(
         rename = "scheduledAmounts",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub scheduled_amounts: Vec<ScheduledAmount>,
@@ -366,6 +369,7 @@ pub struct CreateSubscriptionParams {
     #[serde(
         rename = "acqAgreements",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub acq_agreements: Vec<serde_json::Value>,
@@ -527,6 +531,7 @@ pub struct InquirySubscriptionData {
     #[serde(
         rename = "paymentDetails",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub payment_details: Vec<PaymentDetail>,
@@ -874,6 +879,7 @@ pub struct ChangeInquiryData {
     #[serde(
         rename = "productInfoList",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub product_info_list: Vec<SubscriptionChangeProductInfo>,
@@ -957,12 +963,14 @@ pub struct UpdateSubscriptionData {
     #[serde(
         rename = "previousScheduledAmounts",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub previous_scheduled_amounts: Vec<ScheduledAmount>,
     #[serde(
         rename = "newScheduledAmounts",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub new_scheduled_amounts: Vec<ScheduledAmount>,

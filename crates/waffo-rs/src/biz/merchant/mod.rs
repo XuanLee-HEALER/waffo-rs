@@ -31,18 +31,21 @@ pub struct InquiryMerchantConfigData {
     #[serde(
         rename = "totalDailyLimit",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "std::collections::HashMap::is_empty"
     )]
     pub total_daily_limit: HashMap<String, String>,
     #[serde(
         rename = "remainingDailyLimit",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "std::collections::HashMap::is_empty"
     )]
     pub remaining_daily_limit: HashMap<String, String>,
     #[serde(
         rename = "transactionLimit",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "std::collections::HashMap::is_empty"
     )]
     pub transaction_limit: HashMap<String, String>,
@@ -73,6 +76,7 @@ pub struct InquiryPayMethodConfigData {
     #[serde(
         rename = "payMethodDetails",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub pay_method_details: Vec<PayMethodDetail>,
@@ -95,6 +99,7 @@ pub struct PayMethodDetail {
     #[serde(
         rename = "fixedMaintenanceRules",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub fixed_maintenance_rules: Vec<FixedMaintenanceRule>,

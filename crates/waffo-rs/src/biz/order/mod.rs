@@ -225,6 +225,7 @@ pub struct WaffoTokenCardData {
     #[serde(
         rename = "cardBinDataList",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub card_bin_data_list: Vec<CardBinData>,
@@ -250,6 +251,7 @@ pub struct CardBinData {
     #[serde(
         rename = "cardTypeList",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub card_type_list: Vec<String>,
@@ -267,6 +269,7 @@ pub struct CardBinData {
     #[serde(
         rename = "cardIssueCountryCodeList",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub card_issue_country_code_list: Vec<String>,

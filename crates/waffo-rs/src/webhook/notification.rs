@@ -89,144 +89,168 @@ pub struct PaymentNotificationResult {
     #[serde(
         rename = "paymentRequestId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub payment_request_id: String,
     #[serde(
         rename = "merchantOrderId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub merchant_order_id: String,
     #[serde(
         rename = "acquiringOrderId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub acquiring_order_id: String,
     #[serde(
         rename = "orderStatus",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_status: String,
     #[serde(
         rename = "orderAction",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_action: String,
     #[serde(
         rename = "orderCurrency",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_currency: String,
     #[serde(
         rename = "orderAmount",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_amount: String,
     #[serde(
         rename = "userCurrency",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub user_currency: String,
     #[serde(
         rename = "finalDealAmount",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub final_deal_amount: String,
     #[serde(
         rename = "orderDescription",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_description: String,
     #[serde(
         rename = "merchantInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub merchant_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "userInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub user_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "goodsInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub goods_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "addressInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub address_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "paymentInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub payment_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "orderRequestedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_requested_at: String,
     #[serde(
         rename = "orderExpiredAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_expired_at: String,
     #[serde(
         rename = "orderUpdatedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_updated_at: String,
     #[serde(
         rename = "orderCompletedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_completed_at: String,
     #[serde(
         rename = "orderFailedReason",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "FailureReason::is_empty"
     )]
     pub order_failed_reason: FailureReason,
     #[serde(
         rename = "extendInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub extend_info: String,
     #[serde(
         rename = "subscriptionInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Option::is_none"
     )]
     pub subscription_info: Option<crate::biz::subscription::SubscriptionInfo>,
     #[serde(
         rename = "refundExpiryAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_expiry_at: String,
     #[serde(
         rename = "cancelRedirectUrl",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub cancel_redirect_url: String,
@@ -242,108 +266,126 @@ pub struct RefundNotificationResult {
     #[serde(
         rename = "refundRequestId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_request_id: String,
     #[serde(
         rename = "merchantRefundOrderId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub merchant_refund_order_id: String,
     #[serde(
         rename = "acquiringOrderId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub acquiring_order_id: String,
     #[serde(
         rename = "acquiringRefundOrderId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub acquiring_refund_order_id: String,
     #[serde(
         rename = "origPaymentRequestId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub orig_payment_request_id: String,
     #[serde(
         rename = "refundAmount",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_amount: String,
     #[serde(
         rename = "refundStatus",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_status: String,
     #[serde(
         rename = "remainingRefundAmount",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub remaining_refund_amount: String,
     #[serde(
         rename = "userCurrency",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub user_currency: String,
     #[serde(
         rename = "finalDealAmount",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub final_deal_amount: String,
     #[serde(
         rename = "refundReason",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_reason: String,
     #[serde(
         rename = "refundRequestedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_requested_at: String,
     #[serde(
         rename = "refundUpdatedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_updated_at: String,
     #[serde(
         rename = "refundCompletedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_completed_at: String,
     #[serde(
         rename = "refundFailedReason",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "FailureReason::is_empty"
     )]
     pub refund_failed_reason: FailureReason,
     #[serde(
         rename = "userInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub user_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "refundSource",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub refund_source: String,
     #[serde(
         rename = "extendInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub extend_info: String,
@@ -360,118 +402,147 @@ pub struct SubscriptionNotificationResult {
     #[serde(
         rename = "subscriptionRequest",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_request: String,
     #[serde(
         rename = "merchantSubscriptionId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub merchant_subscription_id: String,
     #[serde(
         rename = "subscriptionId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_id: String,
     #[serde(
         rename = "payMethodSubscriptionId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub pay_method_subscription_id: String,
     #[serde(
         rename = "subscriptionStatus",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_status: String,
     #[serde(
         rename = "subscriptionAction",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_action: String,
-    #[serde(rename = "currency", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "currency",
+        default,
+        deserialize_with = "crate::common::de::null_as_default",
+        skip_serializing_if = "String::is_empty"
+    )]
     pub currency: String,
-    #[serde(rename = "amount", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "amount",
+        default,
+        deserialize_with = "crate::common::de::null_as_default",
+        skip_serializing_if = "String::is_empty"
+    )]
     pub amount: String,
     #[serde(
         rename = "userCurrency",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub user_currency: String,
     #[serde(
         rename = "productInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub product_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "merchantInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub merchant_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "userInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub user_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "goodsInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub goods_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "addressInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub address_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "paymentInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub payment_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "requestedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub requested_at: String,
     #[serde(
         rename = "updatedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub updated_at: String,
     #[serde(
         rename = "failedReason",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "FailureReason::is_empty"
     )]
     pub failed_reason: FailureReason,
     #[serde(
         rename = "extendInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub extend_info: String,
     #[serde(
         rename = "subscriptionManagementUrl",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_management_url: String,
     #[serde(
         rename = "paymentDetails",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub payment_details: Vec<HashMap<String, serde_json::Value>>,
@@ -488,110 +559,133 @@ pub struct SubscriptionChangeNotificationResult {
     #[serde(
         rename = "subscriptionRequest",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_request: String,
     #[serde(
         rename = "originSubscriptionRequest",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub origin_subscription_request: String,
     #[serde(
         rename = "merchantSubscriptionId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub merchant_subscription_id: String,
     #[serde(
         rename = "subscriptionId",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_id: String,
     #[serde(
         rename = "subscriptionChangeStatus",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_change_status: String,
     #[serde(
         rename = "subscriptionAction",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_action: String,
     #[serde(
         rename = "remainingAmount",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub remaining_amount: String,
-    #[serde(rename = "currency", default, skip_serializing_if = "String::is_empty")]
+    #[serde(
+        rename = "currency",
+        default,
+        deserialize_with = "crate::common::de::null_as_default",
+        skip_serializing_if = "String::is_empty"
+    )]
     pub currency: String,
     #[serde(
         rename = "userCurrency",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub user_currency: String,
     #[serde(
         rename = "requestedAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub requested_at: String,
     #[serde(
         rename = "subscriptionManagementUrl",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub subscription_management_url: String,
     #[serde(
         rename = "extendInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub extend_info: String,
     #[serde(
         rename = "orderExpiredAt",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "String::is_empty"
     )]
     pub order_expired_at: String,
     #[serde(
         rename = "productInfoList",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "Vec::is_empty"
     )]
     pub product_info_list: Vec<HashMap<String, serde_json::Value>>,
     #[serde(
         rename = "merchantInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub merchant_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "userInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub user_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "goodsInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub goods_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "addressInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub address_info: HashMap<String, serde_json::Value>,
     #[serde(
         rename = "paymentInfo",
         default,
+        deserialize_with = "crate::common::de::null_as_default",
         skip_serializing_if = "HashMap::is_empty"
     )]
     pub payment_info: HashMap<String, serde_json::Value>,
