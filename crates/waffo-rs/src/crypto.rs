@@ -2,7 +2,7 @@
 //! ISO-8601 timestamp helper. Signature scheme: RSA PKCS#1 v1.5 over SHA-256,
 //! Base64-encoded — matching the Go SDK.
 
-use base64::{engine::general_purpose::STANDARD, Engine as _};
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use rsa::pkcs1::{DecodeRsaPrivateKey, DecodeRsaPublicKey};
 use rsa::pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey};
 use rsa::{Pkcs1v15Sign, RsaPrivateKey, RsaPublicKey};

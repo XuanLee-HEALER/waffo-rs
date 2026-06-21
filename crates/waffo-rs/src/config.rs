@@ -69,8 +69,8 @@ impl WaffoConfig {
             _ => Environment::Sandbox,
         };
         Ok(WaffoConfig {
-            api_key: req("WAFFO_API_KEY")?,
-            private_key: req("WAFFO_PRIVATE_KEY")?,
+            api_key: req("WAFFO_MERCHANT_API_KEY")?,
+            private_key: req("WAFFO_MERCHANT_PRIVATE_KEY")?,
             waffo_public_key: req("WAFFO_PUBLIC_KEY")?,
             environment,
             base_url_override: std::env::var("WAFFO_BASE_URL")

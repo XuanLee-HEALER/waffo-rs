@@ -7,7 +7,7 @@ use waffo_rs::webhook::{
     RefundStatus, SubscriptionChangeNotificationResult, SubscriptionDispatch,
     SubscriptionNotificationResult, SubscriptionStatus, WebhookEvent,
 };
-use waffo_rs::{crypto, Client, WaffoConfig, WaffoError};
+use waffo_rs::{Client, WaffoConfig, WaffoError, crypto};
 
 // ---- status classification (From<&str> / as_str) ---------------------------
 
@@ -47,7 +47,10 @@ fn refund_status_classification_roundtrips() {
 #[test]
 fn subscription_status_classification_roundtrips() {
     let known = [
-        ("AUTHORIZATION_REQUIRED", SubscriptionStatus::AuthorizationRequired),
+        (
+            "AUTHORIZATION_REQUIRED",
+            SubscriptionStatus::AuthorizationRequired,
+        ),
         ("IN_PROGRESS", SubscriptionStatus::InProgress),
         ("ACTIVE", SubscriptionStatus::Active),
         ("CLOSE", SubscriptionStatus::Close),
@@ -132,9 +135,11 @@ fn subscription_dispatch_status_over_payment() {
     assert!(sub.subscription_dispatch(false, false).is_none());
 
     // Non-status events never dispatch.
-    assert!(payment("PAY_SUCCESS")
-        .subscription_dispatch(true, true)
-        .is_none());
+    assert!(
+        payment("PAY_SUCCESS")
+            .subscription_dispatch(true, true)
+            .is_none()
+    );
 }
 
 // ---- FailureReason (lenient deserialize) -----------------------------------
@@ -148,7 +153,9 @@ fn failure_reason_accepts_object() {
     let fr = failure(r#"{"code":1,"message":"boom"}"#);
     assert!(!fr.is_empty());
     assert_eq!(
-        fr.as_map().get("message").and_then(serde_json::Value::as_str),
+        fr.as_map()
+            .get("message")
+            .and_then(serde_json::Value::as_str),
         Some("boom")
     );
 }
@@ -167,7 +174,9 @@ fn failure_reason_accepts_json_encoded_string() {
 fn failure_reason_wraps_plain_string_as_message() {
     let fr = failure(r#""something failed""#);
     assert_eq!(
-        fr.as_map().get("message").and_then(serde_json::Value::as_str),
+        fr.as_map()
+            .get("message")
+            .and_then(serde_json::Value::as_str),
         Some("something failed")
     );
 }
@@ -332,10 +341,10 @@ fn notification_decodes_string_encoded_failed_reason() {
 mod axum_tests {
     use super::{crypto, webhook_client};
     use axum::http::HeaderMap;
-    use waffo_rs::webhook::axum::{
-        parse_request, signature_from_headers, signed_response, SIGNATURE_HEADER,
-    };
     use waffo_rs::webhook::WebhookEvent;
+    use waffo_rs::webhook::axum::{
+        SIGNATURE_HEADER, parse_request, signature_from_headers, signed_response,
+    };
 
     #[test]
     fn signature_from_headers_reads_the_header() {

@@ -4,7 +4,7 @@
 //! the read/write transport-failure split, and per-request options.
 
 use waffo_rs::biz::order;
-use waffo_rs::{crypto, Client, RequestOptions, WaffoConfig, WaffoError};
+use waffo_rs::{Client, RequestOptions, WaffoConfig, WaffoError, crypto};
 use wiremock::matchers::{header, header_exists, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -45,7 +45,10 @@ async fn request_carries_api_key_version_and_signature_headers() {
 
     let (client, _waffo) = client_for(&server.uri());
     let resp = order::create(&client, order::CreateOrderParams::default(), None).await;
-    assert!(resp.is_ok(), "signed request should match the mock: {resp:?}");
+    assert!(
+        resp.is_ok(),
+        "signed request should match the mock: {resp:?}"
+    );
 }
 
 #[tokio::test]
@@ -64,7 +67,10 @@ async fn accepts_a_validly_signed_response() {
         .await;
 
     let resp = order::create(&client, order::CreateOrderParams::default(), None).await;
-    assert!(resp.is_ok(), "a validly signed response should be accepted: {resp:?}");
+    assert!(
+        resp.is_ok(),
+        "a validly signed response should be accepted: {resp:?}"
+    );
 }
 
 #[tokio::test]
@@ -93,7 +99,9 @@ async fn maps_business_error_code() {
     let (client, _waffo) = client_for(&server.uri());
 
     Mock::given(method("POST"))
-        .respond_with(ResponseTemplate::new(200).set_body_string(r#"{"code":"A0014","msg":"rejected"}"#))
+        .respond_with(
+            ResponseTemplate::new(200).set_body_string(r#"{"code":"A0014","msg":"rejected"}"#),
+        )
         .mount(&server)
         .await;
 
@@ -110,7 +118,9 @@ async fn maps_e0001_to_unknown_status() {
     let (client, _waffo) = client_for(&server.uri());
 
     Mock::given(method("POST"))
-        .respond_with(ResponseTemplate::new(200).set_body_string(r#"{"code":"E0001","msg":"uncertain"}"#))
+        .respond_with(
+            ResponseTemplate::new(200).set_body_string(r#"{"code":"E0001","msg":"uncertain"}"#),
+        )
         .mount(&server)
         .await;
 
@@ -162,5 +172,8 @@ async fn per_request_options_add_headers() {
         ..Default::default()
     };
     let resp = order::create(&client, order::CreateOrderParams::default(), Some(&opts)).await;
-    assert!(resp.is_ok(), "the per-request header should reach the server: {resp:?}");
+    assert!(
+        resp.is_ok(),
+        "the per-request header should reach the server: {resp:?}"
+    );
 }

@@ -5,7 +5,7 @@
 //! run in the normal suite, CI, or coverage. Run them explicitly:
 //!
 //! ```sh
-//! WAFFO_API_KEY=... WAFFO_PRIVATE_KEY=... WAFFO_PUBLIC_KEY=... \
+//! WAFFO_MERCHANT_API_KEY=... WAFFO_MERCHANT_PRIVATE_KEY=... WAFFO_PUBLIC_KEY=... \
 //! WAFFO_MERCHANT_ID=... WAFFO_ENVIRONMENT=SANDBOX \
 //! cargo test --test e2e -- --ignored --nocapture
 //! ```
@@ -41,7 +41,7 @@ fn client_from_env() -> Client {
     });
 
     let cfg = WaffoConfig::from_env().expect(
-        "e2e: set WAFFO_API_KEY / WAFFO_PRIVATE_KEY / WAFFO_PUBLIC_KEY \
+        "e2e: set WAFFO_MERCHANT_API_KEY / WAFFO_MERCHANT_PRIVATE_KEY / WAFFO_PUBLIC_KEY \
          (+ WAFFO_MERCHANT_ID, WAFFO_ENVIRONMENT=SANDBOX) — e.g. in a .env file",
     );
     Client::new(cfg).expect("e2e: client should build from the env config")

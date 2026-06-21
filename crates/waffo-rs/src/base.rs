@@ -9,8 +9,8 @@
 use std::time::Duration;
 
 use rsa::{RsaPrivateKey, RsaPublicKey};
-use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 
 use crate::common::error::{Result, WaffoError};
 use crate::common::trace::redact;

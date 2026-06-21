@@ -34,7 +34,7 @@ test:
     cargo test --all-features
 
 # Run the sandbox end-to-end tests. Needs WAFFO_* credentials in the env
-# (WAFFO_API_KEY / WAFFO_PRIVATE_KEY / WAFFO_PUBLIC_KEY [+ WAFFO_MERCHANT_ID,
+# (WAFFO_MERCHANT_API_KEY / WAFFO_MERCHANT_PRIVATE_KEY / WAFFO_PUBLIC_KEY [+ WAFFO_MERCHANT_ID,
 # WAFFO_ENVIRONMENT=SANDBOX]).
 e2e:
     cargo test --test e2e -- --ignored --nocapture

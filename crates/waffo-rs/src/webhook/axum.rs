@@ -37,7 +37,7 @@ use axum::response::Response;
 use crate::base::Client;
 use crate::common::error::Result;
 
-use super::{build_signed_response, verify_and_parse, WebhookEvent};
+use super::{WebhookEvent, build_signed_response, verify_and_parse};
 
 /// Conventional inbound/outbound signature header name (per the Waffo README
 /// examples). Waffo sends the request signature in this header and expects your

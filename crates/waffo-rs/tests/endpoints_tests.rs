@@ -2,7 +2,7 @@
 //! exercising each `Endpoint` declaration + the uniform `send` path end to end.
 
 use waffo_rs::biz::{merchant, order, refund, subscription};
-use waffo_rs::{crypto, Client, WaffoConfig};
+use waffo_rs::{Client, WaffoConfig, crypto};
 use wiremock::matchers::method;
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -54,27 +54,51 @@ async fn every_endpoint_round_trips() {
         .unwrap();
 
     // subscription
-    subscription::create(&client, subscription::CreateSubscriptionParams::default(), None)
-        .await
-        .unwrap();
-    subscription::inquiry(&client, subscription::InquirySubscriptionParams::default(), None)
-        .await
-        .unwrap();
-    subscription::cancel(&client, subscription::CancelSubscriptionParams::default(), None)
-        .await
-        .unwrap();
-    subscription::manage(&client, subscription::ManageSubscriptionParams::default(), None)
-        .await
-        .unwrap();
-    subscription::change(&client, subscription::ChangeSubscriptionParams::default(), None)
-        .await
-        .unwrap();
+    subscription::create(
+        &client,
+        subscription::CreateSubscriptionParams::default(),
+        None,
+    )
+    .await
+    .unwrap();
+    subscription::inquiry(
+        &client,
+        subscription::InquirySubscriptionParams::default(),
+        None,
+    )
+    .await
+    .unwrap();
+    subscription::cancel(
+        &client,
+        subscription::CancelSubscriptionParams::default(),
+        None,
+    )
+    .await
+    .unwrap();
+    subscription::manage(
+        &client,
+        subscription::ManageSubscriptionParams::default(),
+        None,
+    )
+    .await
+    .unwrap();
+    subscription::change(
+        &client,
+        subscription::ChangeSubscriptionParams::default(),
+        None,
+    )
+    .await
+    .unwrap();
     subscription::change_inquiry(&client, subscription::ChangeInquiryParams::default(), None)
         .await
         .unwrap();
-    subscription::update(&client, subscription::UpdateSubscriptionParams::default(), None)
-        .await
-        .unwrap();
+    subscription::update(
+        &client,
+        subscription::UpdateSubscriptionParams::default(),
+        None,
+    )
+    .await
+    .unwrap();
 
     // merchant / pay-method config
     merchant::merchant_config_inquiry(

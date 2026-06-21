@@ -3,7 +3,7 @@
 
 use waffo_rs::base::Envelope;
 use waffo_rs::common::redact;
-use waffo_rs::{crypto, Client, WaffoConfig, WaffoError};
+use waffo_rs::{Client, WaffoConfig, WaffoError, crypto};
 
 // ---- error helpers ---------------------------------------------------------
 
@@ -37,7 +37,11 @@ fn error_display_includes_context() {
     let text = api.to_string();
     assert!(text.contains("A0014"));
     assert!(text.contains("refund rejected"));
-    assert!(WaffoError::Config("oops".into()).to_string().contains("oops"));
+    assert!(
+        WaffoError::Config("oops".into())
+            .to_string()
+            .contains("oops")
+    );
 }
 
 // ---- envelope -> result ----------------------------------------------------
@@ -151,6 +155,7 @@ fn client_with_custom_http_client() {
         .build()
         .unwrap();
 
-    let client = Client::with_http_client(cfg, reqwest::Client::new()).expect("client should build");
+    let client =
+        Client::with_http_client(cfg, reqwest::Client::new()).expect("client should build");
     let _ = client.public_key();
 }

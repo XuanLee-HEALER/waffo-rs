@@ -60,21 +60,25 @@ fn builder_applies_defaults() {
 fn builder_requires_api_private_and_public_keys() {
     assert!(WaffoConfig::builder().build().is_err());
     assert!(WaffoConfig::builder().api_key("K").build().is_err());
-    assert!(WaffoConfig::builder()
-        .api_key("K")
-        .private_key("P")
-        .build()
-        .is_err());
+    assert!(
+        WaffoConfig::builder()
+            .api_key("K")
+            .private_key("P")
+            .build()
+            .is_err()
+    );
 }
 
 #[test]
 fn builder_treats_empty_strings_as_missing() {
-    assert!(WaffoConfig::builder()
-        .api_key("")
-        .private_key("P")
-        .waffo_public_key("W")
-        .build()
-        .is_err());
+    assert!(
+        WaffoConfig::builder()
+            .api_key("")
+            .private_key("P")
+            .waffo_public_key("W")
+            .build()
+            .is_err()
+    );
 
     let cfg = WaffoConfig::builder()
         .api_key("K")
@@ -112,15 +116,15 @@ fn remove_env(key: &str) {
 #[test]
 fn from_env_reads_validates_and_errors() {
     const VARS: [&str; 5] = [
-        "WAFFO_API_KEY",
-        "WAFFO_PRIVATE_KEY",
+        "WAFFO_MERCHANT_API_KEY",
+        "WAFFO_MERCHANT_PRIVATE_KEY",
         "WAFFO_PUBLIC_KEY",
         "WAFFO_ENVIRONMENT",
         "WAFFO_MERCHANT_ID",
     ];
 
-    set_env("WAFFO_API_KEY", "envkey");
-    set_env("WAFFO_PRIVATE_KEY", "envpriv");
+    set_env("WAFFO_MERCHANT_API_KEY", "envkey");
+    set_env("WAFFO_MERCHANT_PRIVATE_KEY", "envpriv");
     set_env("WAFFO_PUBLIC_KEY", "envpub");
     set_env("WAFFO_ENVIRONMENT", "PRODUCTION");
     set_env("WAFFO_MERCHANT_ID", "envM");
@@ -140,7 +144,7 @@ fn from_env_reads_validates_and_errors() {
     );
 
     // A missing required variable is an error.
-    remove_env("WAFFO_API_KEY");
+    remove_env("WAFFO_MERCHANT_API_KEY");
     assert!(WaffoConfig::from_env().is_err());
 
     for v in VARS {

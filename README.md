@@ -72,7 +72,7 @@ let client = Client::new(config)?;               // keys are parsed once here
 # Ok::<(), waffo_rs::WaffoError>(())
 ```
 
-`WaffoConfig::from_env()` reads `WAFFO_API_KEY`, `WAFFO_PRIVATE_KEY`,
+`WaffoConfig::from_env()` reads `WAFFO_MERCHANT_API_KEY`, `WAFFO_MERCHANT_PRIVATE_KEY`,
 `WAFFO_PUBLIC_KEY`, `WAFFO_ENVIRONMENT`, `WAFFO_MERCHANT_ID`.
 
 ### Create an order
