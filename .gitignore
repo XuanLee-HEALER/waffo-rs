@@ -12,9 +12,8 @@ Cargo.lock
 .DS_Store
 Thumbs.db
 
-# Local-only design / analysis docs (kept in the working tree, not published)
-/docs/WAFFO_RS_DESIGN.md
-/docs/WAFFO_GO_ANALYSIS.md
+# Local-only docs / references (design notes, vendor test-case sheets, etc.)
+/docs/
 
 # Real credentials — never commit. Use .env.example as the template.
 /.env
