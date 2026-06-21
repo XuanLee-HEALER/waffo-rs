@@ -101,21 +101,27 @@ pub struct ConfigBuilder {
 }
 
 impl ConfigBuilder {
+    /// Merchant API key issued by Waffo (sent as the `X-API-KEY` header). Required.
     #[must_use]
     pub fn api_key(mut self, v: impl Into<String>) -> Self {
         self.api_key = Some(v.into());
         self
     }
+    /// Merchant RSA private key (PKCS#8 PEM or base64 DER) used to sign every
+    /// request. Required.
     #[must_use]
     pub fn private_key(mut self, v: impl Into<String>) -> Self {
         self.private_key = Some(v.into());
         self
     }
+    /// Waffo's RSA public key, used to verify response and webhook signatures.
+    /// Required.
     #[must_use]
     pub fn waffo_public_key(mut self, v: impl Into<String>) -> Self {
         self.waffo_public_key = Some(v.into());
         self
     }
+    /// Target [`Environment`] (sandbox vs production); selects the default base URL.
     #[must_use]
     pub fn environment(mut self, v: Environment) -> Self {
         self.environment = v;
@@ -127,21 +133,27 @@ impl ConfigBuilder {
         self.base_url_override = Some(v.into());
         self
     }
+    /// Merchant id auto-injected into requests whose params declare a
+    /// merchant-id field (via `#[derive(WaffoRequest)]`).
     #[must_use]
     pub fn merchant_id(mut self, v: impl Into<String>) -> Self {
         self.merchant_id = Some(v.into());
         self
     }
+    /// TCP connect timeout in milliseconds.
     #[must_use]
     pub fn connect_timeout_ms(mut self, v: u64) -> Self {
         self.connect_timeout_ms = Some(v);
         self
     }
+    /// Per-request read/response timeout in milliseconds.
     #[must_use]
     pub fn read_timeout_ms(mut self, v: u64) -> Self {
         self.read_timeout_ms = Some(v);
         self
     }
+    /// When `true`, trace logs include **unredacted** request/response bodies and
+    /// signatures. For local debugging only — never enable in production.
     #[must_use]
     pub fn debug_unredacted(mut self, v: bool) -> Self {
         self.debug_unredacted = v;

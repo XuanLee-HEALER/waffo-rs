@@ -6,6 +6,14 @@ license.workspace = true
 rust-version.workspace = true
 description = "Async Rust SDK for the Waffo payment platform"
 repository = "https://github.com/XuanLee-HEALER/waffo-rs"
+readme = "../../README.md"
+keywords = ["waffo", "payment", "sdk", "webhook", "async"]
+categories = ["api-bindings", "asynchronous"]
+
+# Build docs.rs with the optional `axum` integration documented too (docs.rs
+# uses default features otherwise).
+[package.metadata.docs.rs]
+all-features = true
 
 [lib]
 name = "waffo_rs"
