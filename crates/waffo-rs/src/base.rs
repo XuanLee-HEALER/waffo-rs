@@ -36,18 +36,23 @@ pub struct InjectCtx<'a> {
 /// Implemented by every request params struct (via `#[derive(WaffoRequest)]`).
 /// Performs the pre-send field injection the Go SDK did via reflection.
 pub trait WaffoRequest {
+    /// Inject the configured merchant id / current timestamp into this request
+    /// before it is serialized and signed.
     fn inject(&mut self, ctx: &InjectCtx<'_>);
 }
 
 /// Implemented by nested merchant-info structs so the derive can inject the
 /// configured merchant id into them.
 pub trait MerchantInfoExt {
+    /// Set the merchant id on this nested struct if it is currently empty.
     fn set_merchant_id_if_empty(&mut self, merchant_id: &str);
 }
 
 /// A single API endpoint: a pure declaration of request/response types + path.
 pub trait Endpoint {
+    /// Request params type — serialized and signed as the request body.
     type Req: WaffoRequest + Serialize;
+    /// Response data type — decoded from the envelope `data` field.
     type Resp: DeserializeOwned;
     /// Path appended to the environment base URL, e.g. `"/order/create"`.
     const PATH: &'static str;
@@ -127,14 +132,21 @@ impl Client {
     pub fn with_http_client(config: WaffoConfig, http: reqwest::Client) -> Result<Self> {
         let private_key = crypto::parse_private_key(&config.private_key)?;
         let public_key = crypto::parse_public_key(&config.waffo_public_key)?;
-        Ok(Client {
+        let client = Client {
             config,
             http,
             private_key,
             public_key,
-        })
+        };
+        tracing::debug!(
+            environment = ?client.config.environment,
+            base_url = client.config.base_url(),
+            "waffo client created (custom http client)",
+        );
+        Ok(client)
     }
 
+    /// The configuration this client was built with.
     pub fn config(&self) -> &WaffoConfig {
         &self.config
     }

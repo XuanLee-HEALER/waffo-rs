@@ -7,6 +7,7 @@ use super::notification::{
     PaymentNotificationResult, RefundNotificationResult, SubscriptionChangeNotificationResult,
     SubscriptionNotificationResult,
 };
+use crate::biz::chargeback::{ChargebackOrder, ChargebackPhase, ChargebackStatus};
 
 // ---------------------------------------------------------------------------
 // Event types (the `eventType` envelope field).
@@ -22,6 +23,8 @@ pub const EVENT_SUBSCRIPTION_STATUS: &str = "SUBSCRIPTION_STATUS_NOTIFICATION";
 pub const EVENT_SUBSCRIPTION_PERIOD_CHANGED: &str = "SUBSCRIPTION_PERIOD_CHANGED_NOTIFICATION";
 /// `eventType` for a subscription change (upgrade/downgrade) notification.
 pub const EVENT_SUBSCRIPTION_CHANGE: &str = "SUBSCRIPTION_CHANGE_NOTIFICATION";
+/// `eventType` for a chargeback notification.
+pub const EVENT_CHARGEBACK: &str = "CHARGEBACK_NOTIFICATION";
 
 // ---------------------------------------------------------------------------
 // Order status values (PAYMENT_NOTIFICATION `orderStatus`).
@@ -223,6 +226,9 @@ pub enum WebhookEvent {
     SubscriptionPeriodChanged(SubscriptionNotificationResult),
     /// `SUBSCRIPTION_CHANGE_NOTIFICATION`.
     SubscriptionChange(SubscriptionChangeNotificationResult),
+    /// `CHARGEBACK_NOTIFICATION`. Carries the same [`ChargebackOrder`] object a
+    /// chargeback inquiry returns.
+    Chargeback(ChargebackOrder),
 }
 
 impl WebhookEvent {
@@ -234,6 +240,7 @@ impl WebhookEvent {
             WebhookEvent::SubscriptionStatus(_) => EVENT_SUBSCRIPTION_STATUS,
             WebhookEvent::SubscriptionPeriodChanged(_) => EVENT_SUBSCRIPTION_PERIOD_CHANGED,
             WebhookEvent::SubscriptionChange(_) => EVENT_SUBSCRIPTION_CHANGE,
+            WebhookEvent::Chargeback(_) => EVENT_CHARGEBACK,
         }
     }
 
@@ -264,6 +271,24 @@ impl WebhookEvent {
             WebhookEvent::SubscriptionStatus(r) => {
                 Some(SubscriptionStatus::from(r.subscription_status.as_str()))
             }
+            _ => None,
+        }
+    }
+
+    /// Classify a chargeback event by its `chargebackStatus`. Returns `None`
+    /// for any non-chargeback event.
+    pub fn chargeback_status(&self) -> Option<ChargebackStatus> {
+        match self {
+            WebhookEvent::Chargeback(c) => Some(c.status()),
+            _ => None,
+        }
+    }
+
+    /// Classify a chargeback event by its `chargebackPhase`. Returns `None` for
+    /// any non-chargeback event.
+    pub fn chargeback_phase(&self) -> Option<ChargebackPhase> {
+        match self {
+            WebhookEvent::Chargeback(c) => Some(c.phase()),
             _ => None,
         }
     }

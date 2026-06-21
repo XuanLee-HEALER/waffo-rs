@@ -5,7 +5,7 @@
 use waffo_rs::webhook::{
     self, FailureReason, OrderStatus, PaymentNotificationResult, RefundNotificationResult,
     RefundStatus, SubscriptionChangeNotificationResult, SubscriptionDispatch,
-    SubscriptionNotificationResult, SubscriptionStatus, WebhookEvent,
+    SubscriptionNotificationResult, SubscriptionStatus, WebhookAck, WebhookEvent,
 };
 use waffo_rs::{Client, WaffoConfig, WaffoError, crypto};
 
@@ -307,14 +307,31 @@ fn build_signed_response_bodies_and_signature() {
     let (client, _waffo) = webhook_client();
     let merchant_pub = client.private_key().to_public_key();
 
-    let (body, sig) = webhook::build_signed_response(&client, true).unwrap();
-    assert_eq!(body, r#"{"message":"success"}"#);
-    crypto::verify(&merchant_pub, body.as_bytes(), &sig)
-        .expect("response signature should verify under the merchant key");
+    // All three acks (and the bool shorthands) produce the exact body + a
+    // signature that verifies under the merchant key.
+    let cases = [
+        (WebhookAck::Success, r#"{"message":"success"}"#, true),
+        (WebhookAck::Failed, r#"{"message":"failed"}"#, false),
+        (WebhookAck::Unknown, r#"{"message":"unknown"}"#, false),
+    ];
+    for (ack, expected, acknowledges) in cases {
+        assert_eq!(ack.body(), expected);
+        assert_eq!(ack.acknowledges(), acknowledges);
+        let (body, sig) = webhook::build_signed_response(&client, ack).unwrap();
+        assert_eq!(body, expected);
+        crypto::verify(&merchant_pub, body.as_bytes(), &sig)
+            .expect("response signature should verify under the merchant key");
+    }
 
-    let (body, sig) = webhook::build_signed_response(&client, false).unwrap();
-    assert_eq!(body, r#"{"message":"failed"}"#);
-    crypto::verify(&merchant_pub, body.as_bytes(), &sig).unwrap();
+    // `bool` still works via `Into<WebhookAck>`.
+    assert_eq!(
+        webhook::build_signed_response(&client, true).unwrap().0,
+        r#"{"message":"success"}"#
+    );
+    assert_eq!(
+        webhook::build_signed_response(&client, false).unwrap().0,
+        r#"{"message":"failed"}"#
+    );
 }
 
 // ---- a notification result carrying a JSON-encoded failedReason ------------
@@ -355,15 +372,20 @@ mod axum_tests {
     }
 
     #[test]
-    fn signed_response_sets_status_body_and_header() {
+    fn signed_response_is_always_200_with_signature() {
+        use waffo_rs::webhook::WebhookAck;
         let (client, _waffo) = webhook_client();
 
-        let ok = signed_response(&client, true);
-        assert_eq!(ok.status().as_u16(), 200);
-        assert!(ok.headers().get(SIGNATURE_HEADER).is_some());
+        // Every ack returns HTTP 200 (the outcome lives in the body, per the
+        // Waffo reference server) and carries the signature header.
+        for ack in [WebhookAck::Success, WebhookAck::Failed, WebhookAck::Unknown] {
+            let resp = signed_response(&client, ack);
+            assert_eq!(resp.status().as_u16(), 200, "ack {ack:?} should be 200");
+            assert!(resp.headers().get(SIGNATURE_HEADER).is_some());
+        }
 
-        let failed = signed_response(&client, false);
-        assert_eq!(failed.status().as_u16(), 400);
+        // bool shorthand still works.
+        assert_eq!(signed_response(&client, false).status().as_u16(), 200);
     }
 
     #[test]

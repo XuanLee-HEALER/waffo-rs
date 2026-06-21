@@ -14,18 +14,20 @@
 //!
 //! ```ignore
 //! use axum::{body::Bytes, http::HeaderMap, response::Response};
-//! use waffo_rs::webhook::{self, WebhookEvent};
+//! use waffo_rs::webhook::{self, WebhookAck, WebhookEvent};
 //! use waffo_rs::webhook::axum::{signature_from_headers, signed_response, SIGNATURE_HEADER};
 //!
 //! async fn webhook_handler(headers: HeaderMap, body: Bytes) -> Response {
 //!     let sig = signature_from_headers(&headers).unwrap_or("");
 //!     match webhook::verify_and_parse(&CLIENT, &body, sig) {
-//!         Ok(WebhookEvent::Payment(p)) => {
-//!             // ... your business logic ...
-//!             signed_response(&CLIENT, true)
-//!         }
-//!         Ok(_other) => signed_response(&CLIENT, true),
-//!         Err(_) => signed_response(&CLIENT, false),
+//!         Ok(WebhookEvent::Payment(p)) => match process_payment(&p) {
+//!             Ok(()) => signed_response(&CLIENT, WebhookAck::Success),
+//!             // Transient failure: ask Waffo to retry (up to 24h).
+//!             Err(_) => signed_response(&CLIENT, WebhookAck::Unknown),
+//!         },
+//!         Ok(_other) => signed_response(&CLIENT, WebhookAck::Success),
+//!         // Bad signature etc. — don't acknowledge; Waffo retries.
+//!         Err(_) => signed_response(&CLIENT, WebhookAck::Failed),
 //!     }
 //! }
 //! ```
@@ -37,12 +39,16 @@ use axum::response::Response;
 use crate::base::Client;
 use crate::common::error::Result;
 
-use super::{WebhookEvent, build_signed_response, verify_and_parse};
+use super::{WebhookAck, WebhookEvent, build_signed_response, verify_and_parse};
 
-/// Conventional inbound/outbound signature header name (per the Waffo README
-/// examples). Waffo sends the request signature in this header and expects your
-/// signed response signature echoed back in it.
-pub const SIGNATURE_HEADER: &str = "X-Waffo-Signature";
+/// Inbound/outbound webhook signature header name. Waffo sends the request
+/// signature in this header and expects your signed response signature echoed
+/// back in it.
+///
+/// This is `X-SIGNATURE` — the same header the main API channel uses, per the
+/// Chargeback/API spec and the official Go SDK's webhook server (which reads and
+/// writes `X-SIGNATURE`). Verified end-to-end against the sandbox.
+pub const SIGNATURE_HEADER: &str = "X-SIGNATURE";
 
 /// Read the webhook signature from a request [`HeaderMap`].
 ///
@@ -66,24 +72,21 @@ pub fn parse_request(client: &Client, headers: &HeaderMap, body: &[u8]) -> Resul
 
 /// Turn [`build_signed_response`] into an axum [`Response`].
 ///
-/// HTTP `200 OK` with body `{"message":"success"}` when `ok`, otherwise HTTP
-/// `400 Bad Request` with body `{"message":"failed"}`. The response signature is
-/// written to the [`SIGNATURE_HEADER`] response header and `Content-Type` is set
-/// to `application/json`.
+/// Always HTTP `200 OK` (matching the Waffo reference server) with the
+/// [`WebhookAck`] body — `{"message":"success"|"failed"|"unknown"}` — and the
+/// response signature in the [`SIGNATURE_HEADER`] header; `Content-Type` is
+/// `application/json`. Waffo decides whether to retry from the body, not the
+/// status: only [`WebhookAck::Success`] acknowledges. Accepts a [`WebhookAck`]
+/// or a `bool` (`true` → success, `false` → failed).
 ///
-/// On the (effectively impossible) signing error this still returns a `400`
-/// failed response with no signature header rather than panicking, so a webhook
-/// handler always produces a response.
-pub fn signed_response(client: &Client, ok: bool) -> Response {
-    match build_signed_response(client, ok) {
+/// On the (effectively impossible) signing error this returns a `200` failed
+/// response with no signature header rather than panicking, so a webhook handler
+/// always produces a response (Waffo then retries, since it can't verify it).
+pub fn signed_response(client: &Client, ack: impl Into<WebhookAck>) -> Response {
+    match build_signed_response(client, ack.into()) {
         Ok((body, signature)) => {
-            let status = if ok {
-                StatusCode::OK
-            } else {
-                StatusCode::BAD_REQUEST
-            };
             let mut builder = Response::builder()
-                .status(status)
+                .status(StatusCode::OK)
                 .header(axum::http::header::CONTENT_TYPE, "application/json");
             if let Ok(value) = HeaderValue::from_str(&signature) {
                 builder = builder.header(SIGNATURE_HEADER, value);
@@ -97,9 +100,11 @@ pub fn signed_response(client: &Client, ok: bool) -> Response {
 }
 
 /// Last-resort failed response (used only if signing or response building fails).
+/// Unsigned, so Waffo cannot verify it and will retry — the desired effect when
+/// we could not produce a proper reply.
 fn fallback_failed() -> Response {
     Response::builder()
-        .status(StatusCode::BAD_REQUEST)
+        .status(StatusCode::OK)
         .header(axum::http::header::CONTENT_TYPE, "application/json")
         .body(Body::from(super::RESPONSE_BODY_FAILED))
         .expect("static failed response is always valid")
