@@ -23,56 +23,56 @@ pub fn derive_waffo_request(input: TokenStream) -> TokenStream {
 
     let mut stmts = Vec::new();
 
-    if let Data::Struct(s) = &input.data {
-        if let Fields::Named(named) = &s.fields {
-            for field in &named.named {
-                let ident = field.ident.as_ref().unwrap();
-                let mut kind: Option<&'static str> = None;
+    if let Data::Struct(s) = &input.data
+        && let Fields::Named(named) = &s.fields
+    {
+        for field in &named.named {
+            let ident = field.ident.as_ref().unwrap();
+            let mut kind: Option<&'static str> = None;
 
-                for attr in &field.attrs {
-                    if !attr.path().is_ident("waffo") {
-                        continue;
-                    }
-                    let res = attr.parse_nested_meta(|meta| {
-                        if meta.path.is_ident("requested_at") {
-                            kind = Some("requested_at");
-                        } else if meta.path.is_ident("merchant_id") {
-                            kind = Some("merchant_id");
-                        } else if meta.path.is_ident("merchant_info") {
-                            kind = Some("merchant_info");
-                        } else {
-                            return Err(meta.error("unknown `waffo` attribute"));
-                        }
-                        Ok(())
-                    });
-                    if let Err(e) = res {
-                        return e.to_compile_error().into();
-                    }
+            for attr in &field.attrs {
+                if !attr.path().is_ident("waffo") {
+                    continue;
                 }
+                let res = attr.parse_nested_meta(|meta| {
+                    if meta.path.is_ident("requested_at") {
+                        kind = Some("requested_at");
+                    } else if meta.path.is_ident("merchant_id") {
+                        kind = Some("merchant_id");
+                    } else if meta.path.is_ident("merchant_info") {
+                        kind = Some("merchant_info");
+                    } else {
+                        return Err(meta.error("unknown `waffo` attribute"));
+                    }
+                    Ok(())
+                });
+                if let Err(e) = res {
+                    return e.to_compile_error().into();
+                }
+            }
 
-                match kind {
-                    Some("requested_at") => stmts.push(quote! {
+            match kind {
+                Some("requested_at") => stmts.push(quote! {
+                    if self.#ident.as_deref().unwrap_or("").is_empty() {
+                        self.#ident = ::core::option::Option::Some(__ctx.now.to_string());
+                    }
+                }),
+                Some("merchant_id") => stmts.push(quote! {
+                    if let ::core::option::Option::Some(__mid) = __ctx.merchant_id {
                         if self.#ident.as_deref().unwrap_or("").is_empty() {
-                            self.#ident = ::core::option::Option::Some(__ctx.now.to_string());
+                            self.#ident = ::core::option::Option::Some(__mid.to_string());
                         }
-                    }),
-                    Some("merchant_id") => stmts.push(quote! {
-                        if let ::core::option::Option::Some(__mid) = __ctx.merchant_id {
-                            if self.#ident.as_deref().unwrap_or("").is_empty() {
-                                self.#ident = ::core::option::Option::Some(__mid.to_string());
-                            }
-                        }
-                    }),
-                    Some("merchant_info") => stmts.push(quote! {
-                        if let ::core::option::Option::Some(__mid) = __ctx.merchant_id {
-                            ::waffo_rs::base::MerchantInfoExt::set_merchant_id_if_empty(
-                                self.#ident.get_or_insert_with(::core::default::Default::default),
-                                __mid,
-                            );
-                        }
-                    }),
-                    _ => {}
-                }
+                    }
+                }),
+                Some("merchant_info") => stmts.push(quote! {
+                    if let ::core::option::Option::Some(__mid) = __ctx.merchant_id {
+                        ::waffo_rs::base::MerchantInfoExt::set_merchant_id_if_empty(
+                            self.#ident.get_or_insert_with(::core::default::Default::default),
+                            __mid,
+                        );
+                    }
+                }),
+                _ => {}
             }
         }
     }

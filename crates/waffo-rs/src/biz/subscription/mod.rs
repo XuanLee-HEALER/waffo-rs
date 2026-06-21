@@ -791,10 +791,10 @@ impl ChangeSubscriptionData {
         if trimmed.starts_with("http://") || trimmed.starts_with("https://") {
             return trimmed.to_string();
         }
-        if let Ok(a) = serde_json::from_str::<Action>(trimmed) {
-            if !a.web_url.is_empty() {
-                return a.web_url;
-            }
+        if let Ok(a) = serde_json::from_str::<Action>(trimmed)
+            && !a.web_url.is_empty()
+        {
+            return a.web_url;
         }
         String::new()
     }

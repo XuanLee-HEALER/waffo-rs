@@ -3,10 +3,10 @@ resolver = "2"
 members = ["crates/waffo-rs", "crates/waffo-rs-derive"]
 
 [workspace.package]
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 license = "MIT"
-rust-version = "1.85"
+rust-version = "1.96"
 
 # Strict quality gate. clippy is the linter (rustfmt is the formatter, see
 # rustfmt.toml). Deny clippy::all and clippy::pedantic; the allow-list below
