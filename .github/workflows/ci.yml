@@ -19,7 +19,7 @@ jobs:
     name: fmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install Rust 1.96 + rustfmt
         uses: dtolnay/rust-toolchain@master
         with:
@@ -32,7 +32,7 @@ jobs:
     name: clippy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install Rust 1.96 + clippy
         uses: dtolnay/rust-toolchain@master
         with:
@@ -41,3 +41,16 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       # Same standard as local `just lint`.
       - run: cargo clippy --all-targets --all-features -- -D warnings
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Rust 1.96
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.96"
+      - uses: Swatinem/rust-cache@v2
+      # Same standard as local `just test` (the sandbox e2e tests stay #[ignore]d).
+      - run: cargo test --all-features
