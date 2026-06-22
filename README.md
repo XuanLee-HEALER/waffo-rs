@@ -115,6 +115,11 @@ Other resources follow the same shape:
 `merchant::{merchant_config_inquiry, pay_method_config_inquiry}`. Each is
 `fn(&Client, Params, Option<&RequestOptions>) -> Result<Data>`.
 
+> **Chargeback support is partial.** The JSON endpoints above and the
+> `CHARGEBACK_NOTIFICATION` webhook are implemented and tested; the file
+> endpoints `/chargeback/file/upload` and `/chargeback/file/download` are **not
+> yet implemented** (they use a different, multipart/binary transport).
+
 ### Handle a webhook
 
 Verify against the **raw request bytes** (never a re-serialized body), match the

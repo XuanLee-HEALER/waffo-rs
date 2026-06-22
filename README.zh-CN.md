@@ -111,6 +111,11 @@ println!("跳转收银台: {}", data.fetch_redirect_url());
 `merchant::{merchant_config_inquiry, pay_method_config_inquiry}`。每个都是
 `fn(&Client, Params, Option<&RequestOptions>) -> Result<Data>`。
 
+> **拒付(chargeback)目前仅部分支持。** 上面这几个 JSON 接口和
+> `CHARGEBACK_NOTIFICATION` webhook 已实现并测试;文件接口
+> `/chargeback/file/upload` 和 `/chargeback/file/download` **尚未实现**(它们走的是
+> multipart / 二进制流,不同于 JSON 管线)。
+
 ### 处理 webhook
 
 务必对**原始请求字节**验签(绝不能用重新序列化后的 body),`match` 事件,再回一个

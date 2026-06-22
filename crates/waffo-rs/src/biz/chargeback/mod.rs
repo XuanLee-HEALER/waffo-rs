@@ -8,9 +8,22 @@
 //! also the `result` payload of the `CHARGEBACK_NOTIFICATION` webhook (see
 //! [`waffo_rs::webhook`]).
 //!
-//! The file upload/download endpoints (`/chargeback/file/*`) use a different
-//! transport (multipart request / binary-stream response) and are intentionally
-//! not part of this module yet.
+//! # Partial support
+//!
+//! Chargeback support in this SDK is **not yet complete.** The four JSON
+//! endpoints ([`inquiry`] / [`update`] / [`accept`] / [`list`]) and the
+//! `CHARGEBACK_NOTIFICATION` webhook are implemented and tested. The two **file
+//! endpoints are not yet implemented:**
+//!
+//! - `/chargeback/file/upload` — multipart/form-data evidence upload
+//! - `/chargeback/file/download` — binary-stream download
+//!
+//! They use a different transport from the JSON pipeline (multipart request /
+//! binary response) and need Waffo's multipart signing scheme confirmed before
+//! they can be added. Until then you can still submit evidence whose files were
+//! uploaded out of band — pass their file ids in [`ChargebackMessage::documents`]
+//! / [`ChargebackEvidence::others_file`] — but uploading and downloading the
+//! files themselves is not available through this SDK.
 
 // ---------------------------------------------------------------------------
 // chargebackPhase / chargebackStatus wire constants
