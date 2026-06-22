@@ -1,6 +1,6 @@
 # waffo-rs
 
-[English](README.md) · [中文](README.zh-CN.md)
+[English](https://github.com/XuanLee-HEALER/waffo-rs/blob/main/README.md) · [中文](https://github.com/XuanLee-HEALER/waffo-rs/blob/main/README.zh-CN.md)
 
 [![crates.io](https://img.shields.io/crates/v/waffo-rs)](https://crates.io/crates/waffo-rs)
 [![docs.rs](https://img.shields.io/docsrs/waffo-rs)](https://docs.rs/waffo-rs)
@@ -187,4 +187,4 @@ Coverage is gated at **≥80% lines** via [`cargo-llvm-cov`](https://github.com/
 
 ## License
 
-Licensed under the [MIT License](LICENSE-MIT).
+Licensed under the [MIT License](https://github.com/XuanLee-HEALER/waffo-rs/blob/main/LICENSE-MIT).

@@ -1,6 +1,6 @@
 # waffo-rs
 
-[English](README.md) · [中文](README.zh-CN.md)
+[English](https://github.com/XuanLee-HEALER/waffo-rs/blob/main/README.md) · [中文](https://github.com/XuanLee-HEALER/waffo-rs/blob/main/README.zh-CN.md)
 
 [![crates.io](https://img.shields.io/crates/v/waffo-rs)](https://crates.io/crates/waffo-rs)
 [![docs.rs](https://img.shields.io/docsrs/waffo-rs)](https://docs.rs/waffo-rs)
@@ -178,4 +178,4 @@ cargo test --features axum  # + axum webhook 集成
 
 ## 许可
 
-基于 [MIT License](LICENSE-MIT)。
+基于 [MIT License](https://github.com/XuanLee-HEALER/waffo-rs/blob/main/LICENSE-MIT)。
